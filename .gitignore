@@ -1,18 +1,18 @@
-# Dev environment
+﻿# Dev environment
 .claude/
 .private/
 .vscode/
 .DS_Store
 Thumbs.db
 
-# Build & dependencies (if ever needed)
+# Build & dependencies
 node_modules/
 .env
 .env.local
 dist/
 build/
 
-# Figma reference (not needed in repo)
+# Figma reference
 figma-make-output/
 
 # Editor temp files
