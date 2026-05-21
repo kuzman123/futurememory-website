@@ -1,0 +1,688 @@
+<!DOCTYPE html>
+<html lang="sr-Latn">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Future Memory — Drugi mozak na zahtev</title>
+  <meta name="description" content="LLM-vođeni sistemi za znanje, programiranje, dizajn i 3D. Studio Nenada Kuzmanovića. futurememory.studio">
+  <meta property="og:title" content="Future Memory">
+  <meta property="og:description" content="Drugi mozak na zahtev. LLM kao kontroler vaših alata.">
+  <meta property="og:image" content="/assets/og-image.png">
+  <meta property="og:url" content="https://futurememory.studio">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="icon" type="image/svg+xml" href="/assets/favicon.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles/tokens.css">
+  <link rel="stylesheet" href="styles/base.css">
+  <link rel="stylesheet" href="styles/layout.css">
+  <link rel="stylesheet" href="styles/components.css">
+  <link rel="stylesheet" href="styles/effects.css">
+  <link rel="stylesheet" href="styles/responsive.css">
+</head>
+<body>
+
+  <!-- ── Navigation ──────────────────────────────────────────────────────────── -->
+  <nav class="nav" role="navigation" aria-label="Glavna navigacija">
+    <a href="#top" class="nav__wordmark">Future <em>Memory</em></a>
+
+    <ul class="nav__links" role="list">
+      <li><a href="#drugi-mozak">Drugi mozak</a></li>
+      <li><a href="#sta-radimo">Šta radimo</a></li>
+      <li><a href="#kako-radimo">Kako radimo</a></li>
+      <li><a href="#studio">Studio</a></li>
+      <li><a href="#kontakt">Kontakt</a></li>
+    </ul>
+
+    <a href="#kontakt" class="btn btn--primary" style="font-size: var(--text-sm); padding: 8px 18px;">Zakaži razgovor</a>
+
+    <button class="nav__hamburger" aria-label="Otvori meni" aria-expanded="false" aria-controls="mobile-menu">
+      <svg class="nav__hamburger-icon-open" width="22" height="22" viewBox="0 0 22 22" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <path d="M3 6h16M3 11h16M3 16h16" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+      </svg>
+      <svg class="nav__hamburger-icon-close" width="22" height="22" viewBox="0 0 22 22" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" style="display:none;">
+        <path d="M4 4l14 14M18 4L4 18" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+      </svg>
+    </button>
+
+    <div class="nav__mobile-menu" id="mobile-menu">
+      <ul class="nav__mobile-links" role="list">
+        <li><a href="#drugi-mozak">Drugi mozak</a></li>
+        <li><a href="#sta-radimo">Šta radimo</a></li>
+        <li><a href="#kako-radimo">Kako radimo</a></li>
+        <li><a href="#studio">Studio</a></li>
+        <li><a href="#kontakt">Kontakt</a></li>
+      </ul>
+      <a href="#kontakt" class="btn btn--primary nav__mobile-cta">Zakaži razgovor</a>
+    </div>
+  </nav>
+
+  <!-- ── Modal root ────────────────────────────────────────────────────────────── -->
+  <div class="modal-backdrop" id="modal-root" role="dialog" aria-modal="true" aria-hidden="true">
+    <div class="modal" id="modal-container"></div>
+  </div>
+
+  <main>
+
+    <!-- ── 1. Hero ────────────────────────────────────────────────────────────── -->
+    <section class="section section--hero" id="top">
+      <div class="hero-orb" aria-hidden="true"></div>
+      <div class="container hero__inner">
+        <div class="hero__eyebrow hero-animate">
+          <span class="badge">Future Memory · Studio</span>
+        </div>
+        <h1 class="hero__title hero-animate">
+          Drugi mozak. <br>
+          <em>Na zahtev.</em>
+        </h1>
+        <p class="hero__lede hero-animate">
+          Vaša lična baza znanja, povezana sa najjačim LLM modelima na tržištu, postaje sagovornik koji razume vaš kontekst i kontroliše alate koje već koristite — od Photoshop-a do ComfyUI-a, od web razvoja do 3D rekonstrukcije.
+        </p>
+        <div class="hero__actions hero-animate">
+          <a href="#sta-radimo" class="btn btn--primary">Pogledaj šta radimo</a>
+          <a href="#drugi-mozak" class="btn btn--ghost">Šta je drugi mozak?</a>
+        </div>
+        <div class="hero__meta hero-animate">
+          <span class="mono">futurememory.studio</span>
+          <span class="mono">·</span>
+          <span class="mono">Novi Sad / Beograd / Daljinski</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── 2. Šta je drugi mozak ─────────────────────────────────────────────── -->
+    <section class="section section--explainer" id="drugi-mozak">
+      <div class="container explainer__grid">
+        <aside class="explainer__heading">
+          <span class="mono mono--label">01 — Koncept</span>
+          <h2>Drugi mozak nije aplikacija. To je <em>arhitektura</em>.</h2>
+          <p class="explainer__lede">
+            Verovatno ste čuli za "Second Brain". Evo šta tu zaista postoji — i šta nije marketing.
+          </p>
+        </aside>
+        <div class="explainer__body">
+          <p>
+            Zamislite bazu podataka u koju vremenom unosite stvari koje vam trebaju. Beleške sa sastanaka. Naučne radove. Snimke razgovora. Fotografije tabli sa idejama. Foldere klijenata. Vaše stare projekte. Bilo šta što biste inače "zaboravili gde ste sačuvali".
+          </p>
+          <p>
+            Tu bazu zatim pohrani jedan od velikih modela — Claude ili ChatGPT/Codex — i indeksira je tako da joj može pristupiti preko chata. Ne čita sve odjednom. Pretražuje relevantno, citira izvor, i odgovara na osnovu vaših podataka. Sa minimalnom potrošnjom tokena, jer ne ubacuje sve u kontekst — samo ono što treba.
+          </p>
+          <p>
+            Rezultat: imate sagovornika koji zna ono što vi znate, ali sa savršenim sećanjem. Pita ga sa telefona dok ste u kafiću. Pita ga sa laptopa dok pišete izveštaj. Pita ga šta ste odlučili na sastanku od pre tri meseca, i on vam citira tačan paragraf iz transkripta.
+          </p>
+          <p>
+            Ovaj sistem nije Notion sa AI dugmetom. Nije ChatGPT sa fajlovima. To je <em>modularan i prenosiv</em> sistem koji vi posedujete — vaši podaci žive na vašem disku, vaš LLM ih čita pod vašim pravilima, i možete ga preneti sa jedne platforme na drugu kada se pejzaž promeni. (A promeniće se.)
+          </p>
+          <p>
+            Drugi mozak nije zamena za vaš mozak. To je <em>spoljni indeks</em> — kao što je biblioteka spoljni indeks za civilizaciju. Vaše misli ostaju vaše. Ovaj sistem samo prestaje da vas tera da ih pamtite napamet.
+          </p>
+          <div class="explainer__caveat">
+            <span class="mono mono--label">Iskrenost</span>
+            <p>
+              LLM-ovi haluciniraju. To je činjenica, ne softverska greška. Sistem koji vam pravim je dizajniran tako da to zna i da radi <em>uprkos</em> tome — sa proverama, citiranjem izvora, i diskovima koji se zovu "ne dozvoli mi da pošaljem ovo bez verifikacije". Bez te discipline, drugi mozak postaje treći problem.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── 3. Šta radimo — Service cards ─────────────────────────────────────── -->
+    <section class="section section--services" id="sta-radimo">
+      <div class="container">
+        <div class="section__header">
+          <span class="mono mono--label">02 — Radovi</span>
+          <h2>Osam radnih tokova. <em>Jedan kontroler.</em></h2>
+          <p class="section__lede">
+            Svaki od ovih tokova koristi LLM kao Kontroler koji vodi alate i pipeline-ove. Vi razgovarate sa kontrolerom. Kontroler radi posao. Kliknite na karticu za detaljnije objašnjenje.
+          </p>
+        </div>
+        <div class="cards-grid">
+
+          <!-- Card 01 — Drugi mozak -->
+          <article class="card" data-card-id="01" tabindex="0" role="button" aria-haspopup="dialog" aria-label="Drugi mozak — pogledaj detalje">
+            <div class="card__image" aria-hidden="true"></div>
+            <div class="card__body">
+              <div>
+                <h3 class="card__title">Drugi mozak</h3>
+                <p class="card__tagline">Vaša lična baza znanja, indeksirana i pretraživa kroz razgovor.</p>
+              </div>
+              <span class="card__cta mono">Detaljnije →</span>
+            </div>
+          </article>
+
+          <!-- Card 02 — Web razvoj -->
+          <article class="card" data-card-id="02" tabindex="0" role="button" aria-haspopup="dialog" aria-label="Web razvoj — pogledaj detalje">
+            <div class="card__image" aria-hidden="true"></div>
+            <div class="card__body">
+              <div>
+                <h3 class="card__title">Web razvoj</h3>
+                <p class="card__tagline">Sajtovi i aplikacije, sa kodom koji ostaje vaš i razumljiv.</p>
+              </div>
+              <span class="card__cta mono">Detaljnije →</span>
+            </div>
+          </article>
+
+          <!-- Card 03 — Brending i grafika -->
+          <article class="card" data-card-id="03" tabindex="0" role="button" aria-haspopup="dialog" aria-label="Brending i grafika — pogledaj detalje">
+            <div class="card__image" aria-hidden="true"></div>
+            <div class="card__body">
+              <div>
+                <h3 class="card__title">Brending i grafika</h3>
+                <p class="card__tagline">Vizuelni sistemi i prepress, kontrolisani direktno iz razgovora.</p>
+              </div>
+              <span class="card__cta mono">Detaljnije →</span>
+            </div>
+          </article>
+
+          <!-- Card 04 — Generativna slika i animacija -->
+          <article class="card" data-card-id="04" tabindex="0" role="button" aria-haspopup="dialog" aria-label="Generativna slika i animacija — pogledaj detalje">
+            <div class="card__image" aria-hidden="true"></div>
+            <div class="card__body">
+              <div>
+                <h3 class="card__title">Generativna slika i animacija</h3>
+                <p class="card__tagline">ComfyUI workflow-i pod prst, sa lokalnim modelima i kontrolom kvaliteta.</p>
+              </div>
+              <span class="card__cta mono">Detaljnije →</span>
+            </div>
+          </article>
+
+          <!-- Card 05 — 3D i Gaussian Splatting -->
+          <article class="card" data-card-id="05" tabindex="0" role="button" aria-haspopup="dialog" aria-label="3D i Gaussian Splatting — pogledaj detalje">
+            <div class="card__image" aria-hidden="true"></div>
+            <div class="card__body">
+              <div>
+                <h3 class="card__title">3D i Gaussian Splatting</h3>
+                <p class="card__tagline">Fotorealistična 3D rekonstrukcija iz fotografija ili video snimaka.</p>
+              </div>
+              <span class="card__cta mono">Detaljnije →</span>
+            </div>
+          </article>
+
+          <!-- Card 06 — Lokalna AI infrastruktura -->
+          <article class="card" data-card-id="06" tabindex="0" role="button" aria-haspopup="dialog" aria-label="Lokalna AI infrastruktura — pogledaj detalje">
+            <div class="card__image" aria-hidden="true"></div>
+            <div class="card__body">
+              <div>
+                <h3 class="card__title">Lokalna AI infrastruktura</h3>
+                <p class="card__tagline">Privatni LLM-ovi na vašem hardveru. Vaši podaci ne idu u tuđi cloud.</p>
+              </div>
+              <span class="card__cta mono">Detaljnije →</span>
+            </div>
+          </article>
+
+          <!-- Card 07 — Glas i transkripcija -->
+          <article class="card" data-card-id="07" tabindex="0" role="button" aria-haspopup="dialog" aria-label="Glas i transkripcija — pogledaj detalje">
+            <div class="card__image" aria-hidden="true"></div>
+            <div class="card__body">
+              <div>
+                <h3 class="card__title">Glas i transkripcija</h3>
+                <p class="card__tagline">Whisper STT pipeline od mikrofona do bilo koje aplikacije, jednim klikom.</p>
+              </div>
+              <span class="card__cta mono">Detaljnije →</span>
+            </div>
+          </article>
+
+          <!-- Card 08 — Mentorstvo i obuka -->
+          <article class="card" data-card-id="08" tabindex="0" role="button" aria-haspopup="dialog" aria-label="Mentorstvo i obuka — pogledaj detalje">
+            <div class="card__image" aria-hidden="true"></div>
+            <div class="card__body">
+              <div>
+                <h3 class="card__title">Mentorstvo i obuka</h3>
+                <p class="card__tagline">Naučite da koristite Claude Code i Codex profesionalno, bez gubljenja godina.</p>
+              </div>
+              <span class="card__cta mono">Detaljnije →</span>
+            </div>
+          </article>
+
+        </div><!-- /.cards-grid -->
+      </div>
+    </section>
+
+    <!-- ── Modal templates (edit content here directly) ──────────────────────── -->
+
+    <template id="modal-01">
+      <button class="modal__close" aria-label="Zatvori">
+        <svg width="15" height="15" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <path d="M1.5 1.5L13.5 13.5M13.5 1.5L1.5 13.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+        </svg>
+      </button>
+      <div class="modal__image modal__image--01" aria-hidden="true"></div>
+      <div class="modal__body">
+        <h2 class="modal__title" id="modal-title-01">Drugi mozak — vaša lična baza znanja</h2>
+        <div class="modal__section">
+          <h3>Šta je ovo</h3>
+          <p>Lična baza znanja koju zajedno punimo vašim materijalom — beleške, PDF-ovi, transkripti razgovora, slike, foldere klijenata, stare projekte. Sve to ulazi u sistem koji LLM indeksira i čita pod vašim pravilima. Pristupate joj preko običnog chata na telefonu ili laptopu. Sistem citira izvor uz svaki odgovor, tako da znate odakle dolazi tvrdnja.</p>
+          <p>Vaši podaci ostaju na vašem disku. Ne odlaze u nečiji cloud osim ako vi tako ne odlučite. Sistem je dizajniran da bude prenosiv — danas radi sa Claude-om, sutra sa novim modelom, bez gubljenja sadržaja koji ste godinama gradili.</p>
+        </div>
+        <hr class="modal__divider">
+        <div class="modal__section">
+          <h3>Šta dobijate</h3>
+          <ul>
+            <li>Strukturisanu bazu znanja sa konvencijama koje vi razumete</li>
+            <li>Chat interfejs (telefon + laptop) koji pretražuje samo vašu bazu</li>
+            <li>Pipeline za dodavanje novih dokumenata (drag-and-drop ili automatski)</li>
+            <li>Pravila citiranja — svaki odgovor sa izvorom</li>
+            <li>Obuku za održavanje sistema bez moje pomoći</li>
+          </ul>
+        </div>
+        <hr class="modal__divider">
+        <div class="modal__section">
+          <h3>Tehnologije</h3>
+          <div class="modal__badges">
+            <span class="chip">Obsidian</span>
+            <span class="chip">Claude Projects</span>
+            <span class="chip">RAG</span>
+            <span class="chip">Markdown</span>
+            <span class="chip">Python</span>
+            <span class="chip">Local-first</span>
+          </div>
+        </div>
+        <a href="#kontakt" class="btn btn--primary modal__cta">Pošalji upit</a>
+      </div>
+    </template>
+
+    <template id="modal-02">
+      <button class="modal__close" aria-label="Zatvori">
+        <svg width="15" height="15" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <path d="M1.5 1.5L13.5 13.5M13.5 1.5L1.5 13.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+        </svg>
+      </button>
+      <div class="modal__image modal__image--02" aria-hidden="true"></div>
+      <div class="modal__body">
+        <h2 class="modal__title" id="modal-title-02">Web razvoj — kod koji razumete</h2>
+        <div class="modal__section">
+          <h3>Šta je ovo</h3>
+          <p>Pravimo web sajtove, landing strane i jednostavnije aplikacije koristeći Claude Code i Codex kao primarne izvršioce. Razlika u odnosu na "AI website builder" alate je u tome da vi dobijate čist kod u svom Git repozitorijumu, koji možete da preuzmete, hostujete bilo gde, i menjate sami ili sa nekim drugim za pet godina.</p>
+          <p>Sistemski je postavljen workflow gde ja vodim arhitekturu i verifikaciju, a LLM-ovi pišu kod pod nadzorom. Sve ide kroz verziju i pregled — bez "magic" koraka koje niko ne razume.</p>
+        </div>
+        <hr class="modal__divider">
+        <div class="modal__section">
+          <h3>Šta dobijate</h3>
+          <ul>
+            <li>Statički sajt ili aplikacija u Git repozitorijumu (vaš nalog)</li>
+            <li>Vanilla HTML/CSS/JS ili React/Next.js, prema potrebi</li>
+            <li>Deploy na Netlify, Vercel ili vaš server</li>
+            <li>Dokumentaciju koju će razumeti i osoba koja vas nasleđuje</li>
+            <li>Mogućnost obuke da sami pravite manje izmene</li>
+          </ul>
+        </div>
+        <hr class="modal__divider">
+        <div class="modal__section">
+          <h3>Tehnologije</h3>
+          <div class="modal__badges">
+            <span class="chip">Claude Code</span>
+            <span class="chip">Codex</span>
+            <span class="chip">HTML/CSS/JS</span>
+            <span class="chip">React</span>
+            <span class="chip">Next.js</span>
+            <span class="chip">Git</span>
+            <span class="chip">Vercel</span>
+            <span class="chip">Netlify</span>
+          </div>
+        </div>
+        <a href="#kontakt" class="btn btn--primary modal__cta">Pošalji upit</a>
+      </div>
+    </template>
+
+    <template id="modal-03">
+      <button class="modal__close" aria-label="Zatvori">
+        <svg width="15" height="15" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <path d="M1.5 1.5L13.5 13.5M13.5 1.5L1.5 13.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+        </svg>
+      </button>
+      <div class="modal__image modal__image--03" aria-hidden="true"></div>
+      <div class="modal__body">
+        <h2 class="modal__title" id="modal-title-03">Brending i grafika — vizuelni sistemi</h2>
+        <div class="modal__section">
+          <h3>Šta je ovo</h3>
+          <p>Brand sistemi, vizuelni identiteti, prepress workflow-i i automatizacija Adobe alata kroz scripting. Photoshop akcije za pripremu za štampu, Illustrator data merge za batch generisanje (sertifikati, etikete, lokalizacije), Figma plugin-i za usklađivanje sa brand sistemom. LLM kontroler ovde znači da vi razgovarate, on pokreće alate — ne morate da znate JSX ili Photoshop scripting.</p>
+        </div>
+        <hr class="modal__divider">
+        <div class="modal__section">
+          <h3>Šta dobijate</h3>
+          <ul>
+            <li>Vizuelni identitet (logo, paleta, tipografija, primeri primene)</li>
+            <li>Prepress-spreman izlaz (TIFF/LZW @ 300 dpi, CMYK gde treba)</li>
+            <li>Batch automatizacije za serije materijala</li>
+            <li>Brand brief koji ne pati od "nadahnutog opisa" — to je dokument, ne oda</li>
+          </ul>
+        </div>
+        <hr class="modal__divider">
+        <div class="modal__section">
+          <h3>Tehnologije</h3>
+          <div class="modal__badges">
+            <span class="chip">Adobe Photoshop</span>
+            <span class="chip">Illustrator</span>
+            <span class="chip">InDesign</span>
+            <span class="chip">Figma</span>
+            <span class="chip">MCP</span>
+            <span class="chip">Scripting</span>
+          </div>
+        </div>
+        <a href="#kontakt" class="btn btn--primary modal__cta">Pošalji upit</a>
+      </div>
+    </template>
+
+    <template id="modal-04">
+      <button class="modal__close" aria-label="Zatvori">
+        <svg width="15" height="15" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <path d="M1.5 1.5L13.5 13.5M13.5 1.5L1.5 13.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+        </svg>
+      </button>
+      <div class="modal__image modal__image--04" aria-hidden="true"></div>
+      <div class="modal__body">
+        <h2 class="modal__title" id="modal-title-04">Generativna slika i animacija — ComfyUI pipelines</h2>
+        <div class="modal__section">
+          <h3>Šta je ovo</h3>
+          <p>Pravimo i isporučujemo ComfyUI workflow-e za vaš RTX hardver ili na cloud GPU. Konzistentni karakteri (IPAdapter, LoRA trening), prepoznatljiv stil (style reference), kontrolisana kompozicija (ControlNet), video (Wan, Hunyuan, animaciju kroz interpolaciju). Cilj je da vi imate workflow koji radi predvidljivo — ne magični prompt koji se "ponekad pogodi".</p>
+          <p>Lokalno izvršavanje na vašem hardveru znači bez mesečne pretplate i bez slanja vaših referenci u tuđi cloud.</p>
+        </div>
+        <hr class="modal__divider">
+        <div class="modal__section">
+          <h3>Šta dobijate</h3>
+          <ul>
+            <li>ComfyUI workflow JSON fajlove sa dokumentacijom svakog node-a</li>
+            <li>Listu modela koje treba preuzeti, sa veličinama i izvorima</li>
+            <li>Recepte za rešavanje uobičajenih problema (ruke, lice, konzistentnost)</li>
+            <li>Po potrebi: obuku za vlastito održavanje</li>
+          </ul>
+        </div>
+        <hr class="modal__divider">
+        <div class="modal__section">
+          <h3>Tehnologije</h3>
+          <div class="modal__badges">
+            <span class="chip">ComfyUI</span>
+            <span class="chip">Flux</span>
+            <span class="chip">SDXL</span>
+            <span class="chip">ControlNet</span>
+            <span class="chip">IPAdapter</span>
+            <span class="chip">Wan</span>
+            <span class="chip">Hunyuan</span>
+            <span class="chip">RTX 3090+</span>
+          </div>
+        </div>
+        <a href="#kontakt" class="btn btn--primary modal__cta">Pošalji upit</a>
+      </div>
+    </template>
+
+    <template id="modal-05">
+      <button class="modal__close" aria-label="Zatvori">
+        <svg width="15" height="15" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <path d="M1.5 1.5L13.5 13.5M13.5 1.5L1.5 13.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+        </svg>
+      </button>
+      <div class="modal__image modal__image--05" aria-hidden="true"></div>
+      <div class="modal__body">
+        <h2 class="modal__title" id="modal-title-05">3D i Gaussian Splatting — fotorealistična rekonstrukcija</h2>
+        <div class="modal__section">
+          <h3>Šta je ovo</h3>
+          <p>Gaussian Splatting je tehnika koja od običnog video snimka ili serije fotografija pravi 3D scenu kojom se može slobodno kretati kamera — sa zadržanim svetlom, refleksijama i materijalima originalne scene. To je nova klasa 3D sadržaja, između foto-realizma i klasičnog mesh-a.</p>
+          <p>Pravimo splat scene za prezentacije proizvoda, virtuelne ture, virtual production setove, AR/VR projekte. Po potrebi izvozimo i u klasičan mesh za Blender ili Unreal pipeline.</p>
+        </div>
+        <hr class="modal__divider">
+        <div class="modal__section">
+          <h3>Šta dobijate</h3>
+          <ul>
+            <li>.ply ili .splat fajl spreman za web viewer ili Unreal/Blender</li>
+            <li>Snimak ili niz fotografija sa uputstvom (ako sami snimate)</li>
+            <li>Web viewer integraciju (ako želite splat na sajtu)</li>
+            <li>Verziju za mobilne uređaje sa optimizacijom</li>
+          </ul>
+        </div>
+        <hr class="modal__divider">
+        <div class="modal__section">
+          <h3>Tehnologije</h3>
+          <div class="modal__badges">
+            <span class="chip">Polycam</span>
+            <span class="chip">Postshot</span>
+            <span class="chip">Nerfstudio</span>
+            <span class="chip">3DGS</span>
+            <span class="chip">Blender</span>
+            <span class="chip">Unreal Engine</span>
+          </div>
+        </div>
+        <a href="#kontakt" class="btn btn--primary modal__cta">Pošalji upit</a>
+      </div>
+    </template>
+
+    <template id="modal-06">
+      <button class="modal__close" aria-label="Zatvori">
+        <svg width="15" height="15" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <path d="M1.5 1.5L13.5 13.5M13.5 1.5L1.5 13.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+        </svg>
+      </button>
+      <div class="modal__image modal__image--06" aria-hidden="true"></div>
+      <div class="modal__body">
+        <h2 class="modal__title" id="modal-title-06">Lokalna AI infrastruktura — privatni LLM-ovi</h2>
+        <div class="modal__section">
+          <h3>Šta je ovo</h3>
+          <p>Za slučajeve gde poverljivost ili budžet ne dozvoljavaju cloud LLM API, postavljamo lokalnu infrastrukturu. Ollama, Qwen, Mistral, Llama — biramo model po zadatku. Hibridni setup (lokalno za rutinske stvari, cloud za one koje zahtevaju jaki "reasoning") drži mesečne troškove na nivou kafe.</p>
+          <p>Setup uključuje Streamlit ili sopstveni dashboard kao jedinstveni interfejs, LangGraph orkestraciju ako su potrebni multi-agent tokovi, i pravila za kada koji model radi šta.</p>
+        </div>
+        <hr class="modal__divider">
+        <div class="modal__section">
+          <h3>Šta dobijate</h3>
+          <ul>
+            <li>Funkcionalan lokalni LLM stack na vašem hardveru</li>
+            <li>Hibridna pravila routing-a (lokalno vs cloud) sa procenom troškova</li>
+            <li>Dashboard za pristup svemu sa jednog mesta</li>
+            <li>Backup i restore procedure</li>
+          </ul>
+        </div>
+        <hr class="modal__divider">
+        <div class="modal__section">
+          <h3>Tehnologije</h3>
+          <div class="modal__badges">
+            <span class="chip">Ollama</span>
+            <span class="chip">Qwen</span>
+            <span class="chip">Mistral</span>
+            <span class="chip">LangGraph</span>
+            <span class="chip">Streamlit</span>
+            <span class="chip">Linux</span>
+            <span class="chip">RTX 3090+</span>
+          </div>
+        </div>
+        <a href="#kontakt" class="btn btn--primary modal__cta">Pošalji upit</a>
+      </div>
+    </template>
+
+    <template id="modal-07">
+      <button class="modal__close" aria-label="Zatvori">
+        <svg width="15" height="15" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <path d="M1.5 1.5L13.5 13.5M13.5 1.5L1.5 13.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+        </svg>
+      </button>
+      <div class="modal__image modal__image--07" aria-hidden="true"></div>
+      <div class="modal__body">
+        <h2 class="modal__title" id="modal-title-07">Glas i transkripcija — Whisper STT pipeline</h2>
+        <div class="modal__section">
+          <h3>Šta je ovo</h3>
+          <p>Lokalna transkripcija govora kroz Whisper, povezana sa hardverskim dugmetom (na primer HOCO bluetooth mikrofonom) ili tastaturskim shortcut-om. Pričate u mikrofon, otpustite dugme, tekst se pojavi gde god je kursor — u chat-u, u dokumentu, u email-u.</p>
+          <p>Pipeline radi lokalno, znači privatno i bez kašnjenja od mrežnog poziva. Pratećih jezika ima koliko ih Whisper podržava (uključujući srpski).</p>
+        </div>
+        <hr class="modal__divider">
+        <div class="modal__section">
+          <h3>Šta dobijate</h3>
+          <ul>
+            <li>Konfigurisan Whisper na vašoj mašini sa modelom prema potrebi</li>
+            <li>Hardver button + softver bridge (pyautogui ili native shortcut)</li>
+            <li>Konfiguracioni fajl koji možete sami menjati (jezik, model, prečice)</li>
+            <li>Po potrebi: real-time transkripciju sastanaka u dokument</li>
+          </ul>
+        </div>
+        <hr class="modal__divider">
+        <div class="modal__section">
+          <h3>Tehnologije</h3>
+          <div class="modal__badges">
+            <span class="chip">Whisper</span>
+            <span class="chip">Python</span>
+            <span class="chip">pyautogui</span>
+            <span class="chip">HOCO BT</span>
+            <span class="chip">Linux/Windows/macOS</span>
+          </div>
+        </div>
+        <a href="#kontakt" class="btn btn--primary modal__cta">Pošalji upit</a>
+      </div>
+    </template>
+
+    <template id="modal-08">
+      <button class="modal__close" aria-label="Zatvori">
+        <svg width="15" height="15" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <path d="M1.5 1.5L13.5 13.5M13.5 1.5L1.5 13.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+        </svg>
+      </button>
+      <div class="modal__image modal__image--08" aria-hidden="true"></div>
+      <div class="modal__body">
+        <h2 class="modal__title" id="modal-title-08">Mentorstvo i obuka — Claude Code profesionalno</h2>
+        <div class="modal__section">
+          <h3>Šta je ovo</h3>
+          <p>Strukturisan jedan-na-jedan program za programere, dizajnere i istraživače koji žele da rade sa LLM-ovima ozbiljno, ne kao hobi. Pokrivamo: kako se postavlja kontekst, kako se verifikuje izlaz, kako se brani od halucinacija, kako se postavlja Git workflow koji radi sa AI saradnikom, i — najvažnije — koja je granica između "ovo mogu da poverim modelu" i "ovo moram sam".</p>
+          <p>Iskreno: LLM-ovi su moćni i nepouzdani u isto vreme. Ako ih koristite bez discipline, dobićete brz prototip i sporu, skupu, dugu produkciju. Cilj programa je da vam uštedi hiljade sati koje biste inače proveli na YouTube-u, učeći kroz pokušaj-i-grešku.</p>
+        </div>
+        <hr class="modal__divider">
+        <div class="modal__section">
+          <h3>Šta dobijate</h3>
+          <ul>
+            <li>6 ili 12 nedelja strukturisanog rada (po dogovoru)</li>
+            <li>Vaš stvarni projekat kao radni materijal</li>
+            <li>Templates za promptove, verification protokole, Git workflow</li>
+            <li>Završni projekat koji radi i koji razumete u celosti</li>
+          </ul>
+        </div>
+        <hr class="modal__divider">
+        <div class="modal__section">
+          <h3>Tehnologije</h3>
+          <div class="modal__badges">
+            <span class="chip">Claude Code</span>
+            <span class="chip">Codex</span>
+            <span class="chip">Git</span>
+            <span class="chip">verification protocols</span>
+            <span class="chip">prompt engineering</span>
+          </div>
+        </div>
+        <a href="#kontakt" class="btn btn--primary modal__cta">Pošalji upit</a>
+      </div>
+    </template>
+
+    <!-- ── 4. Kako radimo — Process ───────────────────────────────────────────── -->
+    <section class="section section--process" id="kako-radimo">
+      <div class="container">
+        <div class="section__header">
+          <span class="mono mono--label">03 — Proces</span>
+          <h2>Kako <em>radimo</em>.</h2>
+          <p class="section__lede">
+            Bez "AI magije". Sa razgovorom, dokumentom, i isporukom koju možete da proverite.
+          </p>
+        </div>
+        <div class="process">
+          <div class="process__step">
+            <span class="mono mono--num">01</span>
+            <h3>Razgovor</h3>
+            <p>Pišete šta vam treba — ili pričamo. Bez ograničenja forme. Cilj je da razumem šta zaista treba da uradimo, a ne šta zvuči dobro u brifu.</p>
+          </div>
+          <div class="process__step">
+            <span class="mono mono--num">02</span>
+            <h3>Dokument</h3>
+            <p>Ja pišem kratak dokument koji opisuje šta će sistem da radi, šta neće, koje su pretpostavke, i koliko košta. Vi potvrđujete ili menjamo dok ne legne.</p>
+          </div>
+          <div class="process__step">
+            <span class="mono mono--num">03</span>
+            <h3>Izgradnja</h3>
+            <p>Radim. Sa Claude Code-om i Codex-om kao izvršiocima, mojim nadzorom kao arhitektom i verifikatorom. Pravim međukorake koji se mogu testirati. Bez "javljam se kad bude gotovo".</p>
+          </div>
+          <div class="process__step">
+            <span class="mono mono--num">04</span>
+            <h3>Isporuka</h3>
+            <p>Predajem fajlove, kod, dokumentaciju. Pokazujem šta radi, šta ne, i koje su poznate granice. Sve ostaje vaše — vaš Git, vaš nalog, vaši podaci.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── 5. Studio ─────────────────────────────────────────────────────────── -->
+    <section class="section section--about" id="studio">
+      <div class="container about__grid">
+        <div class="about__body">
+          <span class="mono mono--label">04 — Studio</span>
+          <h2>Ko stoji iza ovoga.</h2>
+          <p>
+            Future Memory je studio Nenada Kuzmanovića. Docent na Fakultetu tehničkih nauka u Novom Sadu. Poslednjih pet godina sam proveo radeći 15 sati dnevno na razumevanju, testiranju i puštanju u rad svega što je moglo da se preuzme sa GitHub-a i pokrene na RTX 3090.
+          </p>
+          <p>
+            Paralelno sa tim radim na <em>AUTO ENGINE</em> projektu — sistemu za kriptografski upravljano AI-asistirano inženjerstvo. To je razlog zašto ovaj studio ima jaku poziciju oko poštenja, verifikacije, i razlike između "model je rekao" i "stvar je urađena".
+          </p>
+          <p>
+            Ako tražite nekoga ko će vam reći da je AI rešenje svega — to nije ovaj studio. Ako tražite nekoga ko zna gde su granice i kako da ih koristi u vašu korist — onda da.
+          </p>
+        </div>
+        <aside class="about__panel">
+          <h3>Tehnička osnova</h3>
+          <ul class="about__list">
+            <li>RTX 3090 lokalni rig</li>
+            <li>Linux + Windows hibrid</li>
+            <li>Claude Code + Codex za izvršavanje</li>
+            <li>Ollama (Qwen, Mistral, Llama) za lokalni LLM</li>
+            <li>ComfyUI za generativnu sliku/video</li>
+            <li>Adobe paket + Figma za grafiku</li>
+            <li>Git za sve, bez izuzetka</li>
+          </ul>
+          <hr class="about__panel-divider">
+          <h3>Lokacija</h3>
+          <p>Novi Sad. Rad za klijente lokalno i daljinski.</p>
+        </aside>
+      </div>
+    </section>
+
+    <!-- ── Phase 6.5 — Lab section placeholder ───────────────────────────────── -->
+    <!-- LAB SECTION BLOCKED: lab-section-dropin.html was not found in project root. -->
+    <!-- Provide lab-section-dropin.html and re-run Phase 6.5 to integrate. -->
+    <!-- Nav and footer Lab links are commented out until this is resolved. -->
+
+    <!-- ── 6. Kontakt ────────────────────────────────────────────────────────── -->
+    <section class="section section--contact" id="kontakt">
+      <div class="container contact__inner">
+        <span class="mono mono--label">05 — Kontakt</span>
+        <h2>Imate <em>pitanje</em>?</h2>
+        <p class="contact__lede">
+          Pišite kratko šta vam treba. Odgovaram u roku od 2 radna dana.
+        </p>
+        <div class="contact__actions">
+          <a href="mailto:hello@futurememory.studio" class="btn btn--primary">hello@futurememory.studio</a>
+          <a href="#" class="btn btn--ghost" data-calendly-placeholder>Zakaži 30 min razgovor</a>
+        </div>
+        <p class="contact__note mono">
+          Za hitne projekte: napišite "HITNO" u naslov. Inače uobičajen tempo.
+        </p>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ── Footer ────────────────────────────────────────────────────────────────── -->
+  <footer class="footer">
+    <div class="container footer__grid">
+      <div class="footer__brand">
+        <span class="wordmark">Future <em>Memory</em></span>
+        <span class="mono">futurememory.studio</span>
+      </div>
+      <nav class="footer__nav" aria-label="Navigacija u podlozi">
+        <a href="#drugi-mozak">Drugi mozak</a>
+        <a href="#sta-radimo">Šta radimo</a>
+        <a href="#kako-radimo">Kako radimo</a>
+        <a href="#studio">Studio</a>
+        <a href="#kontakt">Kontakt</a>
+      </nav>
+      <div class="footer__meta">
+        <span class="mono">© 2026 Nenad Kuzmanović</span>
+        <span class="mono">Novi Sad, Srbija</span>
+      </div>
+    </div>
+    <div class="footer__strip">
+      <p class="mono">Drugi mozak. Vaš sistem, vaša kontrola, vaš kod.</p>
+    </div>
+  </footer>
+
+  <script src="scripts/main.js"></script>
+</body>
+</html>

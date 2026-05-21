@@ -1,0 +1,85 @@
+/* ── Hero Orb ─────────────────────────────────────────────────────────────────── */
+
+.hero-orb {
+  position: absolute;
+  top: -200px;
+  right: -200px;
+  width: clamp(500px, 55vw, 800px);
+  height: clamp(500px, 55vw, 800px);
+  border-radius: 50%;
+  background: conic-gradient(from 180deg, var(--color-violet), var(--color-cyan), var(--color-pink), var(--color-violet));
+  filter: blur(120px);
+  opacity: 0.25;
+  pointer-events: none;
+  animation: orb-rotate 40s linear infinite;
+  z-index: 1;
+}
+
+@keyframes orb-rotate {
+  to { transform: rotate(360deg); }
+}
+
+/* ── Scroll reveal ────────────────────────────────────────────────────────────── */
+
+.reveal-target {
+  opacity: 0;
+  transform: translateY(12px);
+  transition: opacity var(--motion-slow), transform var(--motion-slow);
+}
+
+.reveal-target.is-revealed {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ── Hero entrance ────────────────────────────────────────────────────────────── */
+
+.hero-animate {
+  opacity: 0;
+  transform: translateY(16px);
+  transition: opacity 400ms var(--ease), transform 400ms var(--ease);
+}
+
+.hero-animate.hero-revealed {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ── Card gradient placeholders ──────────────────────────────────────────────── */
+/* Drop card-01.jpg through card-08.jpg into assets/cards/ to replace these */
+
+.card[data-card-id="01"] .card__image {
+  background: linear-gradient(135deg, #1a0a2e 0%, #0d1b3e 60%, #0a0a1a 100%);
+}
+.card[data-card-id="02"] .card__image {
+  background: linear-gradient(135deg, #0a1628 0%, #0a2224 60%, #081414 100%);
+}
+.card[data-card-id="03"] .card__image {
+  background: linear-gradient(135deg, #1c1000 0%, #2a1800 60%, #1a0f00 100%);
+}
+.card[data-card-id="04"] .card__image {
+  background: linear-gradient(135deg, #1a0a2e 0%, #200a1e 60%, #0d0a14 100%);
+}
+.card[data-card-id="05"] .card__image {
+  background: linear-gradient(135deg, #051828 0%, #071e2e 60%, #041018 100%);
+}
+.card[data-card-id="06"] .card__image {
+  background: linear-gradient(135deg, #0d0a1e 0%, #141024 60%, #0a0814 100%);
+}
+.card[data-card-id="07"] .card__image {
+  background: linear-gradient(135deg, #1e1200 0%, #160e18 60%, #0e0a10 100%);
+}
+.card[data-card-id="08"] .card__image {
+  background: linear-gradient(135deg, #061414 0%, #081c1a 60%, #050e0c 100%);
+}
+
+/* ── Modal gradient placeholders ─────────────────────────────────────────────── */
+
+.modal__image--01 { background: linear-gradient(135deg, #1a0a2e 0%, #0d1b3e 60%, #0a0a1a 100%); }
+.modal__image--02 { background: linear-gradient(135deg, #0a1628 0%, #0a2224 60%, #081414 100%); }
+.modal__image--03 { background: linear-gradient(135deg, #1c1000 0%, #2a1800 60%, #1a0f00 100%); }
+.modal__image--04 { background: linear-gradient(135deg, #1a0a2e 0%, #200a1e 60%, #0d0a14 100%); }
+.modal__image--05 { background: linear-gradient(135deg, #051828 0%, #071e2e 60%, #041018 100%); }
+.modal__image--06 { background: linear-gradient(135deg, #0d0a1e 0%, #141024 60%, #0a0814 100%); }
+.modal__image--07 { background: linear-gradient(135deg, #1e1200 0%, #160e18 60%, #0e0a10 100%); }
+.modal__image--08 { background: linear-gradient(135deg, #061414 0%, #081c1a 60%, #050e0c 100%); }

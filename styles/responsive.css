@@ -1,0 +1,165 @@
+/* ── Tablet: 641px – 1024px ──────────────────────────────────────────────────── */
+@media (max-width: 1024px) {
+  .cards-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .process {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .process__step:nth-child(2) { margin-top: 0; }
+  .process__step:nth-child(3) { margin-top: 0; }
+  .process__step:nth-child(4) { margin-top: 0; }
+
+  .explainer__grid {
+    grid-template-columns: 260px 1fr;
+    gap: var(--space-10);
+  }
+
+  .about__grid {
+    grid-template-columns: 1fr 320px;
+    gap: var(--space-10);
+  }
+
+  .footer__grid {
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-8);
+  }
+
+  .footer__meta {
+    grid-column: 1 / -1;
+    text-align: left;
+  }
+}
+
+/* ── Mobile: ≤ 640px ─────────────────────────────────────────────────────────── */
+@media (max-width: 640px) {
+  /* Typography scale-down */
+  h1, .hero__title {
+    font-size: var(--text-3xl);
+  }
+
+  h2 {
+    font-size: var(--text-xl);
+  }
+
+  p, .hero__lede, .section__lede {
+    font-size: var(--text-base);
+  }
+
+  /* Container */
+  .container {
+    padding-left: var(--gutter-mobile);
+    padding-right: var(--gutter-mobile);
+  }
+
+  /* Sections */
+  .section {
+    padding-top: var(--space-16);
+    padding-bottom: var(--space-16);
+  }
+
+  /* Navbar */
+  .nav__links,
+  .nav > .btn--primary {
+    display: none;
+  }
+
+  .nav__hamburger {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  /* Hero */
+  .hero__title {
+    font-size: var(--text-3xl);
+  }
+
+  .hero-orb {
+    width: clamp(300px, 80vw, 500px);
+    height: clamp(300px, 80vw, 500px);
+    top: -100px;
+    right: -100px;
+  }
+
+  /* Explainer */
+  .explainer__grid {
+    grid-template-columns: 1fr;
+    gap: var(--space-8);
+  }
+
+  .explainer__heading {
+    position: static;
+  }
+
+  /* Cards */
+  .cards-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .card {
+    max-width: 100%;
+    height: 320px;
+  }
+
+  .card__image {
+    height: 192px;
+  }
+
+  .card__body {
+    height: 128px;
+  }
+
+  /* Process */
+  .process {
+    grid-template-columns: 1fr;
+  }
+
+  /* About */
+  .about__grid {
+    grid-template-columns: 1fr;
+    gap: var(--space-8);
+  }
+
+  /* Footer */
+  .footer__grid {
+    grid-template-columns: 1fr;
+    gap: var(--space-8);
+  }
+
+  .footer__meta {
+    text-align: left;
+  }
+
+  /* Modal — full screen on mobile */
+  .modal-backdrop {
+    padding: 0;
+    align-items: flex-end;
+  }
+
+  .modal {
+    max-width: 100vw;
+    max-height: 95vh;
+    border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+    border-left: none;
+    border-right: none;
+    border-bottom: none;
+  }
+
+  /* Hero actions */
+  .hero__actions {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .hero__meta {
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .hero__meta .mono:nth-child(2) {
+    display: none;
+  }
+}
