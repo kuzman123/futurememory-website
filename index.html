@@ -67,7 +67,200 @@
 
     <!-- ── 1. Hero ────────────────────────────────────────────────────────────── -->
     <section class="section section--hero" id="top">
-      <div class="hero-orb" aria-hidden="true"></div>
+      <canvas id="fmNetwork" class="fm-network"></canvas>
+ 
+<style>
+  .fm-network {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 0;
+  }
+</style>
+ 
+<script>
+(function(){
+  const canvas = document.getElementById('fmNetwork');
+  const ctx = canvas.getContext('2d');
+  let W, H, dpr;
+ 
+  function resize(){
+    dpr = Math.min(window.devicePixelRatio || 1, 2);
+    const rect = canvas.getBoundingClientRect();
+    W = rect.width; H = rect.height;
+    canvas.width = W * dpr; canvas.height = H * dpr;
+    ctx.scale(dpr, dpr);
+  }
+  new ResizeObserver(resize).observe(canvas);
+  resize();
+ 
+  // Grid
+  const GRID = 80;
+  const nodes = [];
+  const beams = [];
+ 
+  function buildNodes(){
+    nodes.length = 0;
+    const cols = Math.ceil(W / GRID) + 1;
+    const rows = Math.ceil(H / GRID) + 1;
+    for (let i = 0; i < cols; i++){
+      for (let j = 0; j < rows; j++){
+        // Only ~25% of intersections become live nodes
+        if (Math.random() > 0.25) continue;
+        nodes.push({
+          x: i * GRID,
+          y: j * GRID,
+          col: i, row: j,
+          phase: Math.random() * Math.PI * 2,
+          pulseRate: 0.5 + Math.random() * 1.2
+        });
+      }
+    }
+  }
+  buildNodes();
+  window.addEventListener('resize', () => setTimeout(buildNodes, 100));
+ 
+  // Beam = pulse traveling along grid path between two nodes
+  function spawnBeam(){
+    if (nodes.length < 2) return;
+    const a = nodes[Math.floor(Math.random() * nodes.length)];
+    // Pick a nearby node within 3 grid cells
+    const candidates = nodes.filter(n =>
+      n !== a &&
+      Math.abs(n.col - a.col) + Math.abs(n.row - a.row) > 0 &&
+      Math.abs(n.col - a.col) + Math.abs(n.row - a.row) <= 3
+    );
+    if (!candidates.length) return;
+    const b = candidates[Math.floor(Math.random() * candidates.length)];
+ 
+    // Build L-shaped path (horizontal then vertical, or vice versa)
+    const goHorizFirst = Math.random() > 0.5;
+    const corner = goHorizFirst
+      ? { x: b.x, y: a.y }
+      : { x: a.x, y: b.y };
+ 
+    beams.push({
+      points: [a, corner, b],
+      t: 0,
+      duration: 1.2 + Math.random() * 0.8,
+      hue: Math.random() > 0.5 ? 'violet' : (Math.random() > 0.5 ? 'cyan' : 'pink')
+    });
+  }
+ 
+  const COLORS = {
+    violet: [139, 92, 246],
+    cyan: [34, 211, 238],
+    pink: [236, 72, 153]
+  };
+ 
+  let last = performance.now();
+  function frame(now){
+    const dt = (now - last) / 1000;
+    last = now;
+    const t = now / 1000;
+ 
+    ctx.clearRect(0, 0, W, H);
+ 
+    // 1. Grid (very subtle)
+    ctx.strokeStyle = 'rgba(255,255,255,0.025)';
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    for (let x = 0; x <= W; x += GRID){
+      ctx.moveTo(x + 0.5, 0); ctx.lineTo(x + 0.5, H);
+    }
+    for (let y = 0; y <= H; y += GRID){
+      ctx.moveTo(0, y + 0.5); ctx.lineTo(W, y + 0.5);
+    }
+    ctx.stroke();
+ 
+    // 2. Nodes (pulsing dots at intersections)
+    for (const n of nodes){
+      const pulse = 0.5 + 0.5 * Math.sin(t * n.pulseRate + n.phase);
+      const r = 1.5 + pulse * 1.5;
+      const alpha = 0.15 + pulse * 0.35;
+ 
+      // Outer glow
+      const grad = ctx.createRadialGradient(n.x, n.y, 0, n.x, n.y, 12);
+      grad.addColorStop(0, `rgba(168,139,250,${alpha * 0.6})`);
+      grad.addColorStop(1, 'rgba(168,139,250,0)');
+      ctx.fillStyle = grad;
+      ctx.beginPath();
+      ctx.arc(n.x, n.y, 12, 0, Math.PI * 2);
+      ctx.fill();
+ 
+      // Core
+      ctx.fillStyle = `rgba(250,250,247,${0.4 + pulse * 0.4})`;
+      ctx.beginPath();
+      ctx.arc(n.x, n.y, r, 0, Math.PI * 2);
+      ctx.fill();
+    }
+ 
+    // 3. Spawn new beams (probabilistic)
+    if (Math.random() < 0.08) spawnBeam();
+ 
+    // 4. Render and advance beams
+    for (let i = beams.length - 1; i >= 0; i--){
+      const beam = beams[i];
+      beam.t += dt / beam.duration;
+      if (beam.t >= 1){ beams.splice(i, 1); continue; }
+ 
+      const [c] = [COLORS[beam.hue]];
+      const progress = beam.t;
+      const trailLength = 0.25; // 25% of path is the "trail"
+ 
+      // Compute total path length
+      const p0 = beam.points[0], p1 = beam.points[1], p2 = beam.points[2];
+      const seg1Len = Math.abs(p1.x - p0.x) + Math.abs(p1.y - p0.y);
+      const seg2Len = Math.abs(p2.x - p1.x) + Math.abs(p2.y - p1.y);
+      const totalLen = seg1Len + seg2Len;
+ 
+      function pointAt(u){
+        const d = u * totalLen;
+        if (d <= seg1Len){
+          const k = seg1Len === 0 ? 0 : d / seg1Len;
+          return { x: p0.x + (p1.x - p0.x) * k, y: p0.y + (p1.y - p0.y) * k };
+        } else {
+          const k = seg2Len === 0 ? 0 : (d - seg1Len) / seg2Len;
+          return { x: p1.x + (p2.x - p1.x) * k, y: p1.y + (p2.y - p1.y) * k };
+        }
+      }
+ 
+      // Draw trail as gradient line segments
+      const steps = 20;
+      const trailStart = Math.max(0, progress - trailLength);
+      for (let s = 0; s < steps; s++){
+        const u1 = trailStart + (s / steps) * (progress - trailStart);
+        const u2 = trailStart + ((s + 1) / steps) * (progress - trailStart);
+        const pt1 = pointAt(u1);
+        const pt2 = pointAt(u2);
+        const fade = s / steps; // 0 at tail, 1 at head
+        const alpha = fade * fade * 0.85;
+        ctx.strokeStyle = `rgba(${c[0]},${c[1]},${c[2]},${alpha})`;
+        ctx.lineWidth = 1.5 + fade * 1.5;
+        ctx.beginPath();
+        ctx.moveTo(pt1.x, pt1.y);
+        ctx.lineTo(pt2.x, pt2.y);
+        ctx.stroke();
+      }
+ 
+      // Head glow
+      const head = pointAt(progress);
+      const headGrad = ctx.createRadialGradient(head.x, head.y, 0, head.x, head.y, 14);
+      headGrad.addColorStop(0, `rgba(${c[0]},${c[1]},${c[2]},0.9)`);
+      headGrad.addColorStop(1, `rgba(${c[0]},${c[1]},${c[2]},0)`);
+      ctx.fillStyle = headGrad;
+      ctx.beginPath();
+      ctx.arc(head.x, head.y, 14, 0, Math.PI * 2);
+      ctx.fill();
+    }
+ 
+    requestAnimationFrame(frame);
+  }
+  requestAnimationFrame(frame);
+})();
+</script>>
       <div class="container hero__inner">
         <div class="hero__eyebrow hero-animate">
           <span class="badge">Future Memory · Studio</span>
