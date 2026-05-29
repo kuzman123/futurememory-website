@@ -24,3 +24,10 @@ figma-make-output/
 # OS
 .AppleDouble
 .LSOverride
+
+# Local-only working assets (not for production)
+design_new/
+open-design/
+wallpapers/
+_private/
+*.bak

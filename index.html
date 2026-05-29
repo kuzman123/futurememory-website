@@ -1,456 +1,755 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="sr-Latn">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Future Memory — Drugi mozak na zahtev</title>
   <meta name="description" content="LLM-vođeni sistemi za znanje, programiranje, dizajn i 3D. Studio Nenada Kuzmanovića. futurememory.studio">
   <meta property="og:title" content="Future Memory">
   <meta property="og:description" content="Drugi mozak na zahtev. LLM kao kontroler vaših alata.">
-  <meta property="og:image" content="/assets/og-image.png">
   <meta property="og:url" content="https://futurememory.studio">
-  <meta name="twitter:card" content="summary_large_image">
   <link rel="icon" type="image/svg+xml" href="/assets/favicon.svg">
+
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles/tokens.css">
-  <link rel="stylesheet" href="styles/base.css">
-  <link rel="stylesheet" href="styles/layout.css">
-  <link rel="stylesheet" href="styles/components.css">
-  <link rel="stylesheet" href="styles/effects.css">
-  <link rel="stylesheet" href="styles/responsive.css">
+  <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- Signal Field design-system tokens -->
+  <link rel="stylesheet" href="colors_and_type.css">
+
+  <style>
+    /* ─────────────────────────────────────────────────────────────────────────
+       Future Memory · rendered in the Pure Shader Signal Field design language.
+       Content sourced verbatim from futurememory.studio. Tokens from colors_and_type.css.
+       ───────────────────────────────────────────────────────────────────────── */
+
+    :root {
+      --container: 1120px;
+      --nav-h: 64px;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      color: var(--fp-text);
+      font-family: var(--fp-font-body);
+      background: var(--fp-bg);
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    /* Page substrate: deep black-blue field + a fixed faint signal grid. */
+    .field-substrate {
+      position: fixed;
+      inset: 0;
+      z-index: -2;
+      background:
+        radial-gradient(circle at 50% 0%, rgba(47, 67, 82, 0.28), transparent 46%),
+        /* distant nebula — a whisper of red/pink, felt more than seen */
+        radial-gradient(ellipse 58% 42% at 84% 16%, rgba(233, 96, 130, 0.05), transparent 60%),
+        radial-gradient(ellipse 68% 50% at 10% 86%, rgba(196, 58, 92, 0.045), transparent 62%),
+        linear-gradient(160deg, #030405 0%, #0a0e12 52%, #050708 100%);
+    }
+    .field-grid {
+      position: fixed;
+      inset: -10%;
+      z-index: -1;
+      pointer-events: none;
+      opacity: 0.55;
+      background:
+        repeating-linear-gradient(90deg, rgba(157, 200, 233, 0.035), rgba(157, 200, 233, 0.035) 1px, transparent 1px, transparent 52px),
+        repeating-linear-gradient(0deg, rgba(157, 200, 233, 0.028), rgba(157, 200, 233, 0.028) 1px, transparent 1px, transparent 52px);
+      mask-image: radial-gradient(circle at 50% 30%, #000 0%, rgba(0,0,0,0.35) 70%, transparent 100%);
+      -webkit-mask-image: radial-gradient(circle at 50% 30%, #000 0%, rgba(0,0,0,0.35) 70%, transparent 100%);
+    }
+
+    .container {
+      width: min(var(--container), calc(100% - 48px));
+      margin-inline: auto;
+    }
+
+    a { color: inherit; }
+
+    /* ── Shared diagnostic label (mono kicker) ──────────────────────────────── */
+    .kicker {
+      display: inline-block;
+      color: var(--fp-accent);
+      font: 600 12px/1.2 var(--fp-font-mono);
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+    }
+    .mono { font-family: var(--fp-font-mono); font-variant-numeric: tabular-nums; }
+
+    h1, h2, h3 { font-family: var(--fp-font-display); letter-spacing: 0; text-wrap: balance; }
+    em { font-style: normal; color: var(--fp-accent); }
+
+    /* ── Buttons ─────────────────────────────────────────────────────────────── */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      min-height: var(--fp-control-min);
+      padding: 0 20px;
+      border-radius: var(--fp-radius-button);
+      font: 600 13px/1 var(--fp-font-body);
+      text-decoration: none;
+      cursor: pointer;
+      border: 1px solid transparent;
+      transition: background var(--fp-transition), border-color var(--fp-transition),
+                  color var(--fp-transition), box-shadow var(--fp-transition), transform var(--fp-transition);
+    }
+    .btn--primary {
+      background: var(--fp-accent);
+      color: #05080b;
+      box-shadow: 0 0 0 0 rgba(157, 200, 233, 0);
+    }
+    .btn--primary:hover {
+      background: var(--fp-focus);
+      box-shadow: 0 0 26px rgba(157, 200, 233, 0.38);
+      transform: translateY(-1px);
+    }
+    .btn--ghost {
+      background: var(--fp-button);
+      color: var(--fp-text);
+      border-color: var(--fp-border-strong);
+    }
+    .btn--ghost:hover {
+      border-color: var(--fp-border-hover);
+      background: var(--fp-button-hover);
+    }
+    .btn:focus-visible { outline: 2px solid var(--fp-focus); outline-offset: 3px; }
+
+    /* ── Navigation ──────────────────────────────────────────────────────────── */
+    .nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 40;
+      height: var(--nav-h);
+      display: flex;
+      align-items: center;
+      gap: 24px;
+      padding-inline: max(24px, calc((100% - var(--container)) / 2));
+      border-bottom: 1px solid transparent;
+      transition: background var(--fp-transition), border-color var(--fp-transition), backdrop-filter var(--fp-transition);
+    }
+    .nav.is-scrolled {
+      background: var(--fp-panel-strong);
+      border-bottom-color: var(--fp-border);
+      backdrop-filter: blur(var(--fp-blur-panel));
+      -webkit-backdrop-filter: blur(var(--fp-blur-panel));
+    }
+    .nav__wordmark {
+      font: 600 16px/1 var(--fp-font-display);
+      text-decoration: none;
+      letter-spacing: -0.01em;
+      margin-right: auto;
+    }
+    .nav__links {
+      display: flex;
+      gap: 26px;
+      list-style: none;
+      margin: 0; padding: 0;
+    }
+    .nav__links a {
+      color: var(--fp-muted);
+      text-decoration: none;
+      font: 500 13px/1 var(--fp-font-body);
+      transition: color var(--fp-transition);
+    }
+    .nav__links a:hover { color: var(--fp-text); }
+    .nav__cta { font-size: 12px; padding: 0 16px; min-height: 34px; }
+
+    .nav__hamburger {
+      display: none;
+      background: none; border: none; cursor: pointer;
+      color: var(--fp-text); padding: 6px; margin-left: auto;
+    }
+    .nav__mobile { display: none; }
+
+    /* ── Section scaffolding ─────────────────────────────────────────────────── */
+    .section { padding-block: clamp(64px, 9vw, 120px); position: relative; }
+    .section__header { max-width: 760px; margin-bottom: clamp(36px, 5vw, 56px); }
+    .section__header h2 { margin: 14px 0 0; font-size: clamp(26px, 4vw, 40px); font-weight: 700; line-height: 1.08; }
+    .section__lede { margin: 18px 0 0; max-width: 64ch; color: var(--fp-muted); font-size: 16px; line-height: 1.6; }
+
+    /* ── Hero ────────────────────────────────────────────────────────────────── */
+    .hero {
+      position: relative;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      overflow: hidden;
+      padding-top: var(--nav-h);
+    }
+    .hero__canvas { position: absolute; inset: 0; width: 100%; height: 100%; z-index: 0; pointer-events: none; }
+    .hero__veil {
+      position: absolute; inset: 0; z-index: 1; pointer-events: none;
+      background: radial-gradient(ellipse at 50% 60%, transparent 30%, rgba(3,4,5,0.55) 78%, #030405 100%);
+    }
+    .hero__inner { position: relative; z-index: 2; padding-block: clamp(60px, 12vh, 140px); }
+    .hero__badge {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 6px 12px;
+      border: 1px solid var(--fp-border);
+      border-radius: var(--fp-radius-pill);
+      background: var(--fp-panel);
+      color: var(--fp-muted);
+      font: 500 11px/1 var(--fp-font-mono);
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      backdrop-filter: blur(8px);
+    }
+    .hero__badge::before {
+      content: ""; width: 7px; height: 7px; border-radius: 50%;
+      background: var(--fp-signal-cyan);
+      box-shadow: 0 0 10px var(--fp-signal-cyan);
+    }
+    .hero__title {
+      margin: 22px 0 0;
+      font-size: clamp(40px, 8vw, 84px);
+      font-weight: 700;
+      line-height: 0.98;
+      letter-spacing: -0.02em;
+    }
+    .hero__lede { margin: 24px 0 0; max-width: 60ch; color: var(--fp-muted); font-size: clamp(16px, 2vw, 19px); line-height: 1.55; }
+    .hero__actions { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 34px; }
+    .hero__meta { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 30px; color: var(--fp-muted); font: 500 12px/1 var(--fp-font-mono); letter-spacing: 0.06em; }
+
+    /* ── 01 Koncept ──────────────────────────────────────────────────────────── */
+    .explainer__grid { display: grid; grid-template-columns: 360px 1fr; gap: clamp(32px, 5vw, 72px); align-items: start; }
+    .explainer__heading h2 { margin: 14px 0 0; font-size: clamp(24px, 3.4vw, 36px); font-weight: 700; line-height: 1.1; }
+    .explainer__lede { margin: 18px 0 0; color: var(--fp-muted); font-size: 15px; line-height: 1.6; }
+    .explainer__body p { margin: 0 0 18px; color: var(--fp-text); font-size: 16px; line-height: 1.68; opacity: 0.92; }
+    .explainer__body p:last-of-type { opacity: 1; }
+    .explainer__caveat {
+      margin-top: 28px;
+      padding: 20px 22px;
+      border: 1px solid var(--fp-border);
+      border-radius: var(--fp-radius-panel);
+      background: var(--fp-panel);
+      backdrop-filter: blur(var(--fp-blur-panel));
+    }
+    .explainer__caveat p { margin: 10px 0 0; color: var(--fp-muted); font-size: 14.5px; line-height: 1.6; }
+
+    /* ── 02 Radovi (cards) ───────────────────────────────────────────────────── */
+    .cards-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; }
+    .card {
+      display: flex; flex-direction: column;
+      min-height: 200px;
+      padding: 20px;
+      border: 1px solid var(--fp-border);
+      border-radius: var(--fp-radius-panel);
+      background: var(--fp-panel);
+      backdrop-filter: blur(var(--fp-blur-panel));
+      cursor: pointer;
+      text-align: left;
+      transition: border-color var(--fp-transition), background var(--fp-transition),
+                  transform var(--fp-transition), box-shadow var(--fp-transition);
+    }
+    .card::before {
+      content: attr(data-index);
+      font: 600 11px/1 var(--fp-font-mono);
+      letter-spacing: 0.1em;
+      color: var(--fp-accent);
+      opacity: 0.7;
+    }
+    .card:hover, .card:focus-visible {
+      outline: none;
+      border-color: var(--fp-border-hover);
+      background: var(--fp-button-hover);
+      transform: translateY(-3px);
+      box-shadow: 0 18px 40px rgba(0,0,0,0.4), 0 0 0 1px rgba(157,200,233,0.06);
+    }
+    .card__title { margin: 18px 0 0; font-size: 17px; font-weight: 600; line-height: 1.25; }
+    .card__tagline { margin: 10px 0 0; color: var(--fp-muted); font-size: 13.5px; line-height: 1.55; flex: 1; }
+    .card__cta { margin-top: 16px; color: var(--fp-signal-cold); font: 500 12px/1 var(--fp-font-mono); letter-spacing: 0.04em; }
+
+    /* ── 03 Proces ───────────────────────────────────────────────────────────── */
+    .process { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; }
+    .process__step {
+      padding: 24px 20px;
+      border: 1px solid var(--fp-border);
+      border-radius: var(--fp-radius-panel);
+      background: var(--fp-panel);
+      backdrop-filter: blur(var(--fp-blur-panel));
+    }
+    .process__num {
+      font: 600 13px/1 var(--fp-font-mono);
+      color: var(--fp-signal-cyan);
+      letter-spacing: 0.1em;
+    }
+    .process__step h3 { margin: 16px 0 0; font-size: 17px; font-weight: 600; }
+    .process__step p { margin: 10px 0 0; color: var(--fp-muted); font-size: 14px; line-height: 1.6; }
+
+    /* ── 04 Studio ───────────────────────────────────────────────────────────── */
+    .about__grid { display: grid; grid-template-columns: 1fr 360px; gap: clamp(32px, 5vw, 64px); align-items: start; }
+    .about__body h2 { margin: 14px 0 0; font-size: clamp(24px, 3.4vw, 36px); font-weight: 700; line-height: 1.1; }
+    .about__body p { margin: 18px 0 0; color: var(--fp-text); font-size: 16px; line-height: 1.66; opacity: 0.92; }
+    .about__panel {
+      padding: 24px;
+      border: 1px solid var(--fp-border);
+      border-radius: var(--fp-radius-panel);
+      background: var(--fp-panel);
+      backdrop-filter: blur(var(--fp-blur-panel));
+    }
+    .about__panel h3 { margin: 0; font-size: 13px; font-weight: 600; color: var(--fp-accent); font-family: var(--fp-font-mono); letter-spacing: 0.08em; text-transform: uppercase; }
+    .about__list { margin: 14px 0 0; padding: 0; list-style: none; }
+    .about__list li { padding: 9px 0; border-top: 1px solid var(--fp-border); color: var(--fp-muted); font-size: 14px; }
+    .about__list li:first-child { border-top: none; padding-top: 0; }
+    .about__divider { border: none; border-top: 1px solid var(--fp-border); margin: 22px 0; }
+    .about__panel > p { margin: 12px 0 0; color: var(--fp-muted); font-size: 14px; line-height: 1.6; }
+
+    /* ── 05 Kontakt ──────────────────────────────────────────────────────────── */
+    .contact { text-align: center; }
+    .contact__inner { display: flex; flex-direction: column; align-items: center; }
+    .contact h2 { margin: 14px 0 0; font-size: clamp(28px, 5vw, 52px); font-weight: 700; }
+    .contact__lede { margin: 20px 0 0; max-width: 48ch; color: var(--fp-muted); font-size: 17px; line-height: 1.6; }
+    .contact__actions { display: flex; flex-wrap: wrap; gap: 12px; justify-content: center; margin-top: 32px; }
+    .contact__note { margin-top: 26px; color: var(--fp-muted); font: 500 12px/1.5 var(--fp-font-mono); letter-spacing: 0.04em; }
+
+    /* ── Footer ──────────────────────────────────────────────────────────────── */
+    .footer { border-top: 1px solid var(--fp-border); background: var(--fp-bg-deep); }
+    .footer__grid { display: grid; grid-template-columns: 1fr auto 1fr; gap: 28px; align-items: center; padding-block: 36px; }
+    .footer__brand { display: flex; flex-direction: column; gap: 6px; }
+    .footer__brand .wordmark { font: 600 16px/1 var(--fp-font-display); }
+    .footer__brand .mono { color: var(--fp-muted); font-size: 12px; }
+    .footer__nav { display: flex; flex-wrap: wrap; gap: 18px; justify-content: center; }
+    .footer__nav a { color: var(--fp-muted); text-decoration: none; font-size: 13px; transition: color var(--fp-transition); }
+    .footer__nav a:hover { color: var(--fp-text); }
+    .footer__meta { display: flex; flex-direction: column; gap: 6px; text-align: right; color: var(--fp-muted); font-size: 12px; }
+    .footer__strip { border-top: 1px solid var(--fp-border); }
+    .footer__strip p { margin: 0; padding-block: 18px; text-align: center; color: var(--fp-muted); font: 500 12px/1 var(--fp-font-mono); letter-spacing: 0.06em; }
+
+    /* ── Modal ───────────────────────────────────────────────────────────────── */
+    .modal-backdrop {
+      position: fixed; inset: 0; z-index: 90;
+      display: grid; place-items: center;
+      padding: 24px;
+      background: rgba(2, 4, 6, 0.72);
+      backdrop-filter: blur(6px);
+      opacity: 0; visibility: hidden;
+      transition: opacity 200ms ease, visibility 200ms ease;
+    }
+    .modal-backdrop.is-open { opacity: 1; visibility: visible; }
+    .modal {
+      width: min(640px, 100%);
+      max-height: 86vh;
+      overflow-y: auto;
+      position: relative;
+      border: 1px solid var(--fp-border-strong);
+      border-radius: var(--fp-radius-panel);
+      background: var(--fp-panel-strong);
+      box-shadow: var(--fp-shadow-panel);
+      transform: translateY(12px) scale(0.99);
+      transition: transform 220ms cubic-bezier(0.23, 1, 0.32, 1);
+    }
+    .modal-backdrop.is-open .modal { transform: translateY(0) scale(1); }
+    .modal__close {
+      position: absolute; top: 16px; right: 16px;
+      width: 34px; height: 34px;
+      display: grid; place-items: center;
+      border: 1px solid var(--fp-border); border-radius: var(--fp-radius-button);
+      background: var(--fp-button); color: var(--fp-text); cursor: pointer;
+      transition: border-color var(--fp-transition), background var(--fp-transition);
+    }
+    .modal__close:hover { border-color: var(--fp-border-hover); background: var(--fp-button-hover); }
+    .modal__body { padding: 32px; }
+    .modal__title { margin: 0 36px 0 0; font-size: 24px; font-weight: 700; line-height: 1.15; }
+    .modal__section { margin-top: 22px; }
+    .modal__section h3 { margin: 0 0 10px; font-size: 12px; font-weight: 600; color: var(--fp-accent); font-family: var(--fp-font-mono); letter-spacing: 0.1em; text-transform: uppercase; }
+    .modal__section p { margin: 0 0 12px; color: var(--fp-muted); font-size: 14.5px; line-height: 1.62; }
+    .modal__section ul { margin: 0; padding: 0; list-style: none; }
+    .modal__section li { position: relative; padding: 7px 0 7px 18px; color: var(--fp-muted); font-size: 14px; line-height: 1.5; }
+    .modal__section li::before { content: ""; position: absolute; left: 0; top: 14px; width: 5px; height: 5px; border-radius: 50%; background: var(--fp-signal-cyan); box-shadow: 0 0 8px var(--fp-signal-cyan); }
+    .modal__divider { border: none; border-top: 1px solid var(--fp-border); margin: 22px 0; }
+    .modal__badges { display: flex; flex-wrap: wrap; gap: 8px; }
+    .chip {
+      padding: 5px 11px;
+      border: 1px solid var(--fp-border);
+      border-radius: var(--fp-radius-pill);
+      background: rgba(22, 29, 35, 0.5);
+      color: var(--fp-signal-cold);
+      font: 500 11.5px/1 var(--fp-font-mono);
+      letter-spacing: 0.03em;
+    }
+    .modal__cta { margin-top: 26px; }
+    body.is-modal-open { overflow: hidden; }
+
+    /* ── Reveal / hero entrance ──────────────────────────────────────────────── */
+    .reveal { opacity: 0; transform: translateY(18px); transition: opacity 600ms cubic-bezier(0.23,1,0.32,1), transform 600ms cubic-bezier(0.23,1,0.32,1); }
+    .reveal.is-in { opacity: 1; transform: none; }
+    .hero-anim { opacity: 0; transform: translateY(16px); transition: opacity 700ms cubic-bezier(0.23,1,0.32,1), transform 700ms cubic-bezier(0.23,1,0.32,1); }
+    .hero-anim.is-in { opacity: 1; transform: none; }
+
+    /* ── Responsive ──────────────────────────────────────────────────────────── */
+    @media (max-width: 900px) {
+      .cards-grid { grid-template-columns: repeat(2, 1fr); }
+      .process { grid-template-columns: repeat(2, 1fr); }
+      .explainer__grid { grid-template-columns: 1fr; gap: 28px; }
+      .about__grid { grid-template-columns: 1fr; gap: 28px; }
+    }
+    @media (max-width: 720px) {
+      .nav__links { display: none; }
+      .nav > .nav__cta { display: none; }
+      .nav__hamburger { display: grid; place-items: center; }
+      .nav__mobile {
+        display: none;
+        position: fixed; top: var(--nav-h); left: 0; right: 0;
+        flex-direction: column; gap: 6px;
+        padding: 18px max(24px, calc((100% - var(--container)) / 2)) 24px;
+        background: var(--fp-panel-strong);
+        border-bottom: 1px solid var(--fp-border);
+        backdrop-filter: blur(var(--fp-blur-panel));
+      }
+      .nav.is-open .nav__mobile { display: flex; }
+      .nav__mobile a { color: var(--fp-text); text-decoration: none; padding: 10px 0; font-size: 15px; border-bottom: 1px solid var(--fp-border); }
+      .nav__mobile .btn { margin-top: 12px; }
+      .footer__grid { grid-template-columns: 1fr; text-align: center; justify-items: center; }
+      .footer__meta { text-align: center; }
+    }
+    @media (max-width: 540px) {
+      .cards-grid { grid-template-columns: 1fr; }
+      .process { grid-template-columns: 1fr; }
+      .hero__actions .btn, .contact__actions .btn { flex: 1 1 auto; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      html { scroll-behavior: auto; }
+      .reveal, .hero-anim { transition: none; opacity: 1; transform: none; }
+      .btn--primary:hover { transform: none; }
+      .card:hover { transform: none; }
+    }
+  </style>
 </head>
 <body>
+  <!-- ── Intro title card (ported HyperFrames; plays once per session, then reveals the site) ── -->
+  <div id="fm-intro" role="presentation">
+    <button type="button" class="fm-intro__skip" aria-label="Preskoči uvod">Preskoči ✕</button>
+    <div class="tc-stage">
+      <div class="signal-bg">
+        <div class="bg-glow glow-one"></div>
+        <div class="bg-glow glow-two"></div>
+        <div class="pressure-grid"></div>
+        <div class="scan-band"></div>
+        <div class="route route-a"></div>
+        <div class="route route-b"></div>
+        <div class="route route-c"></div>
+        <div class="node node-a"></div>
+        <div class="node node-b"></div>
+        <div class="node node-c"></div>
+        <div class="ghost-word" aria-hidden="true"></div>
+      </div>
+      <main class="scene-content">
+        <section class="type-stage" aria-label="Drugi mozak. Na zahtev.">
+          <div class="eyebrow">
+            <span class="eyebrow-rule"></span>
+            <span class="eyebrow-text">future memory · studio</span>
+          </div>
+          <div class="title-stack">
+            <div class="title-line line-pure">
+              <span class="word-chip">FM</span>
+              <span class="micro-readout">studio</span>
+            </div>
+            <div class="title-line line-shader" aria-label="Drugi">
+              <span class="char">D</span><span class="char">R</span><span class="char">U</span><span class="char">G</span><span class="char">I</span>
+            </div>
+            <div class="title-line line-signal" aria-label="mozak">
+              <span class="char">M</span><span class="char">O</span><span class="char">Z</span><span class="char">A</span><span class="char">K</span>
+            </div>
+            <div class="title-line line-field">
+              <span class="field-word">NA&nbsp;ZAHTEV</span>
+              <span class="field-pulse"></span>
+            </div>
+          </div>
+          <div class="descriptor-row">
+            <span>drugi mozak</span>
+            <span>lokalni AI</span>
+            <span>vaš kod</span>
+          </div>
+        </section>
+      </main>
+      <div class="resolve-mark">
+        <span class="resolve-text">futurememory.studio</span>
+        <span class="resolve-dot"></span>
+      </div>
+      <div class="tc-blackout"></div>
+    </div>
+  </div>
+
+  <style>
+    /* ── Intro overlay (scoped) ─────────────────────────────────────────── */
+    #fm-intro { position: fixed; inset: 0; z-index: 99999; background: #030405; overflow: hidden; opacity: 1; transition: opacity 0.6s ease; }
+    #fm-intro.is-hidden { opacity: 0; pointer-events: none; }
+    #fm-intro.is-removed { display: none; }
+    #fm-intro .fm-intro__skip {
+      position: absolute; top: 20px; right: 22px; z-index: 30;
+      border: 1px solid rgba(157,200,233,0.34); border-radius: 6px;
+      background: rgba(9,12,15,0.6); color: #c8e7ff;
+      font: 500 12px/1 ui-monospace, "Fira Code", monospace; letter-spacing: 0.1em; text-transform: uppercase;
+      padding: 9px 13px; cursor: pointer; transition: border-color 0.16s, background 0.16s;
+    }
+    #fm-intro .fm-intro__skip:hover { border-color: rgba(190,225,248,0.6); background: rgba(31,42,50,0.85); }
+    #fm-intro .tc-stage {
+      position: absolute; top: 50%; left: 50%;
+      width: 1920px; height: 1080px;
+      transform: translate(-50%, -50%) scale(var(--tc-s, 1)); transform-origin: center center;
+      overflow: hidden; color: #e4edf5; font-family: ui-monospace, "Fira Code", monospace;
+      background:
+        radial-gradient(circle at 72% 38%, rgba(95,184,198,0.12), transparent 30%),
+        radial-gradient(circle at 22% 72%, rgba(45,36,70,0.28), transparent 36%),
+        #030405;
+    }
+    #fm-intro .scene-content { position: relative; z-index: 5; display: flex; flex-direction: column; justify-content: center; width: 100%; height: 100%; padding: 118px 146px 112px; box-sizing: border-box; }
+    #fm-intro .signal-bg, #fm-intro .pressure-grid, #fm-intro .scan-band, #fm-intro .bg-glow, #fm-intro .route, #fm-intro .node, #fm-intro .ghost-word, #fm-intro .tc-blackout { position: absolute; inset: 0; }
+    #fm-intro .signal-bg { z-index: 1; overflow: hidden; }
+    #fm-intro .bg-glow { width: 820px; height: 820px; border-radius: 50%; filter: blur(42px); opacity: 0.36; }
+    #fm-intro .glow-one { top: 40px; right: -120px; background: radial-gradient(circle, rgba(157,200,233,0.22), transparent 65%); }
+    #fm-intro .glow-two { left: -260px; bottom: -160px; background: radial-gradient(circle, rgba(45,36,70,0.42), transparent 62%); }
+    #fm-intro .pressure-grid { opacity: 0.58; background-image: linear-gradient(rgba(157,200,233,0.12) 1px, transparent 1px), linear-gradient(90deg, rgba(157,200,233,0.11) 1px, transparent 1px); background-size: 108px 108px; mask-image: radial-gradient(circle at center, black 0%, black 58%, transparent 86%); -webkit-mask-image: radial-gradient(circle at center, black 0%, black 58%, transparent 86%); }
+    #fm-intro .scan-band { top: -20%; height: 170px; background: linear-gradient(180deg, transparent, rgba(157,200,233,0.08), rgba(95,184,198,0.2), transparent); opacity: 0.74; }
+    #fm-intro .route { width: 760px; height: 2px; transform-origin: left center; background: linear-gradient(90deg, transparent, #9dc8e9, #5fb8c6, transparent); box-shadow: 0 0 26px rgba(157,200,233,0.42); }
+    #fm-intro .route-a { top: 264px; left: 96px; }
+    #fm-intro .route-b { top: 812px; left: 940px; width: 620px; }
+    #fm-intro .route-c { top: 544px; left: 1240px; width: 440px; transform: rotate(90deg); }
+    #fm-intro .node { width: 14px; height: 14px; border-radius: 50%; background: #c8e7ff; box-shadow: 0 0 0 10px rgba(157,200,233,0.08), 0 0 32px rgba(157,200,233,0.68); }
+    #fm-intro .node-a { top: 257px; left: 840px; }
+    #fm-intro .node-b { top: 805px; left: 1500px; }
+    #fm-intro .node-c { top: 320px; left: 1226px; }
+    #fm-intro .ghost-word { top: 624px; left: 112px; width: auto; height: auto; }
+    #fm-intro .ghost-word::before { content: "MEMORY"; color: rgba(228,237,245,0.035); font-family: "Archivo Black", "Arial Black", sans-serif; font-size: 262px; letter-spacing: 0.04em; line-height: 0.82; white-space: nowrap; }
+    #fm-intro .type-stage { display: flex; flex-direction: column; justify-content: center; gap: 34px; width: 100%; max-width: 1540px; min-height: 820px; }
+    #fm-intro .eyebrow { display: flex; align-items: center; gap: 20px; min-height: 34px; color: #91a2af; font-size: 24px; font-weight: 500; text-transform: uppercase; }
+    #fm-intro .eyebrow-rule { width: 156px; height: 2px; background: #9dc8e9; transform-origin: left center; box-shadow: 0 0 22px rgba(157,200,233,0.46); }
+    #fm-intro .title-stack { display: flex; flex-direction: column; gap: 8px; }
+    #fm-intro .title-line { display: flex; align-items: center; min-height: 150px; line-height: 0.86; color: #e4edf5; font-family: "Archivo Black", "Arial Black", sans-serif; font-size: 164px; font-weight: 900; text-transform: uppercase; }
+    #fm-intro .line-pure { min-height: 76px; gap: 22px; font-family: ui-monospace, "Fira Code", monospace; font-size: 46px; line-height: 1; }
+    #fm-intro .word-chip { display: inline-flex; align-items: center; min-height: 56px; padding: 0 18px; border: 1px solid rgba(157,200,233,0.34); border-radius: 6px; background: rgba(9,12,15,0.76); color: #c8e7ff; box-shadow: 0 18px 48px rgba(0,0,0,0.28); }
+    #fm-intro .micro-readout { color: #91a2af; font-size: 28px; font-weight: 500; letter-spacing: 0; font-variant-numeric: tabular-nums; }
+    #fm-intro .line-shader, #fm-intro .line-signal { gap: 10px; }
+    #fm-intro .char { display: inline-block; min-width: 0.62em; will-change: transform, opacity; }
+    #fm-intro .line-shader .char:nth-child(2), #fm-intro .line-shader .char:nth-child(5), #fm-intro .line-signal .char:nth-child(1), #fm-intro .line-signal .char:nth-child(4) { color: #c8e7ff; text-shadow: 0 0 28px rgba(157,200,233,0.28); }
+    #fm-intro .line-signal { color: #9dc8e9; }
+    #fm-intro .line-field { gap: 28px; min-height: 170px; color: #e4edf5; }
+    #fm-intro .field-word { display: inline-block; will-change: transform, opacity; white-space: nowrap; }
+    #fm-intro .field-pulse { display: inline-block; width: 168px; height: 104px; border: 2px solid rgba(95,184,198,0.68); border-radius: 4px; background: linear-gradient(90deg, transparent 47%, rgba(95,184,198,0.62) 48%, transparent 51%), repeating-linear-gradient(90deg, rgba(157,200,233,0.18) 0, rgba(157,200,233,0.18) 2px, transparent 2px, transparent 18px); box-shadow: 0 0 36px rgba(95,184,198,0.24); transform-origin: left center; }
+    #fm-intro .descriptor-row { display: flex; flex-wrap: wrap; gap: 18px; min-height: 54px; color: #91a2af; font-size: 25px; line-height: 1.2; text-transform: uppercase; }
+    #fm-intro .descriptor-row span { display: inline-flex; align-items: center; min-height: 48px; padding: 0 16px; border: 1px solid rgba(145,162,175,0.2); border-radius: 6px; background: rgba(9,12,15,0.5); }
+    #fm-intro .resolve-mark { position: absolute; right: 86px; bottom: 72px; z-index: 7; display: flex; align-items: center; gap: 14px; color: #c8e7ff; font-family: ui-monospace, "Fira Code", monospace; font-size: 22px; text-transform: uppercase; }
+    #fm-intro .resolve-dot { width: 12px; height: 12px; border-radius: 50%; background: #9dc8e9; box-shadow: 0 0 24px rgba(157,200,233,0.7); }
+    #fm-intro .tc-blackout { z-index: 20; background: #030405; opacity: 0; pointer-events: none; }
+  </style>
+
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+  <script>
+  (function () {
+    var intro = document.getElementById('fm-intro');
+    if (!intro) return;
+    var stage = intro.querySelector('.tc-stage');
+    var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    var shown = false; try { shown = sessionStorage.getItem('fmIntroShown') === '1'; } catch (e) {}
+
+    function fit() {
+      var s = Math.max(window.innerWidth / 1920, window.innerHeight / 1080);
+      stage.style.setProperty('--tc-s', s);
+    }
+    fit(); window.addEventListener('resize', fit);
+
+    function cleanup() {
+      intro.classList.add('is-removed');
+      document.body.style.overflow = '';
+      try { sessionStorage.setItem('fmIntroShown', '1'); } catch (e) {}
+    }
+    function reveal() { intro.classList.add('is-hidden'); setTimeout(cleanup, 650); }
+
+    if (reduce || shown || typeof gsap === 'undefined') { intro.classList.add('is-removed'); return; }
+
+    document.body.style.overflow = 'hidden';
+    var q = function (s) { return '#fm-intro ' + s; };
+    var duration = 9;
+    var tl = gsap.timeline({ paused: true, onComplete: reveal });
+
+    tl.from(q('.pressure-grid'), { opacity: 0, scale: 1.05, duration: 0.7, ease: 'sine.out' }, 0.12);
+    tl.from(q('.glow-one'), { opacity: 0, scale: 0.82, duration: 0.9, ease: 'power2.out' }, 0.16);
+    tl.from(q('.glow-two'), { opacity: 0, scale: 0.86, duration: 1, ease: 'power3.out' }, 0.2);
+    tl.from(q('.route'), { scaleX: 0, opacity: 0, duration: 0.72, stagger: 0.12, ease: 'expo.out' }, 0.32);
+    tl.from(q('.node'), { scale: 0.2, opacity: 0, duration: 0.48, stagger: 0.1, ease: 'back.out(2.2)' }, 0.66);
+    tl.from(q('.eyebrow-rule'), { scaleX: 0, duration: 0.5, ease: 'power3.out' }, 0.5);
+    tl.from(q('.eyebrow-text'), { x: -28, opacity: 0, duration: 0.45, ease: 'circ.out' }, 0.64);
+    tl.from(q('.word-chip'), { y: 32, opacity: 0, scale: 0.92, duration: 0.5, ease: 'back.out(1.7)' }, 0.86);
+    tl.from(q('.micro-readout'), { x: -16, opacity: 0, duration: 0.38, ease: 'power2.out' }, 1.05);
+    tl.from(q('.line-shader .char'), { y: 138, opacity: 0, scale: 0.88, rotation: -4, duration: 0.64, stagger: { each: 0.055, from: 'start' }, ease: 'back.out(1.45)' }, 1.18);
+    tl.from(q('.line-signal .char'), { y: -110, opacity: 0, scale: 1.14, rotation: 5, duration: 0.58, stagger: { each: 0.05, from: 'end' }, ease: 'expo.out' }, 1.82);
+    tl.from(q('.field-word'), { x: -92, opacity: 0, duration: 0.56, ease: 'power4.out' }, 2.36);
+    tl.from(q('.field-pulse'), { scaleX: 0, opacity: 0, duration: 0.42, ease: 'circ.out' }, 2.54);
+    tl.from(q('.descriptor-row span'), { y: 26, opacity: 0, duration: 0.42, stagger: 0.08, ease: 'power2.out' }, 2.86);
+    tl.from(q('.resolve-mark'), { y: 20, opacity: 0, duration: 0.44, ease: 'sine.out' }, 3.34);
+    tl.to(q('.scan-band'), { y: 1180, duration: 2.2, repeat: Math.floor(duration / 2.2) - 1, ease: 'none' }, 0);
+    tl.to(q('.route-a'), { x: 420, duration: 2.4, repeat: Math.floor(duration / 2.4) - 1, yoyo: true, ease: 'sine.inOut' }, 0.5);
+    tl.to(q('.route-b'), { x: -360, duration: 2.8, repeat: Math.floor(duration / 2.8) - 1, yoyo: true, ease: 'sine.inOut' }, 0.7);
+    tl.to(q('.route-c'), { y: -240, duration: 3.1, repeat: Math.floor(duration / 3.1) - 1, yoyo: true, ease: 'sine.inOut' }, 0.9);
+    tl.to(q('.bg-glow'), { scale: 1.06, duration: 2.4, repeat: Math.floor(duration / 2.4) - 1, yoyo: true, ease: 'sine.inOut' }, 0.4);
+    tl.to(q('.resolve-dot'), { scale: 1.8, opacity: 0.52, duration: 0.46, repeat: 7, yoyo: true, ease: 'power1.inOut' }, 3.5);
+    tl.to(q('.field-pulse'), { scaleX: 1.12, duration: 0.36, repeat: 8, yoyo: true, ease: 'power2.inOut' }, 3.1);
+    tl.to(q('.title-stack'), { scale: 1.018, duration: 0.34, ease: 'power2.out' }, 5.88);
+    tl.to(q('.title-stack'), { scale: 1, duration: 0.48, ease: 'elastic.out(1, 0.38)' }, 6.22);
+    tl.to(q('.descriptor-row span'), { borderColor: 'rgba(157,200,233,0.56)', color: '#c8e7ff', duration: 0.28, stagger: 0.05, ease: 'power1.out' }, 6.18);
+    tl.to(q('.type-stage'), { y: -24, opacity: 0, duration: 0.55, ease: 'power3.in' }, 7.75);
+    tl.to(q('.resolve-mark'), { x: -620, scale: 1.3, duration: 0.6, ease: 'expo.inOut' }, 7.72);
+    tl.to(q('.resolve-mark'), { opacity: 0, duration: 0.35, ease: 'power2.in' }, 8.2);
+    tl.to(q('.tc-blackout'), { opacity: 1, duration: 0.48, ease: 'sine.inOut' }, 8.46);
+
+    var skip = intro.querySelector('.fm-intro__skip');
+    if (skip) skip.addEventListener('click', function () { tl.kill(); reveal(); });
+    window.__fmIntro = tl; // exposed for verification
+    tl.play();
+  })();
+  </script>
+
+  <div class="field-substrate" aria-hidden="true"></div>
+  <div class="field-grid" aria-hidden="true"></div>
 
   <!-- ── Navigation ──────────────────────────────────────────────────────────── -->
   <nav class="nav" role="navigation" aria-label="Glavna navigacija">
     <a href="#top" class="nav__wordmark">Future <em>Memory</em></a>
-
     <ul class="nav__links" role="list">
       <li><a href="#drugi-mozak">Drugi mozak</a></li>
       <li><a href="#sta-radimo">Šta radimo</a></li>
       <li><a href="#kako-radimo">Kako radimo</a></li>
       <li><a href="#studio">Studio</a></li>
+      <li><a href="blog.html">Blog</a></li>
       <li><a href="#kontakt">Kontakt</a></li>
     </ul>
-
-    <a href="#kontakt" class="btn btn--primary" style="font-size: var(--text-sm); padding: 8px 18px;">Zakaži razgovor</a>
-
+    <a href="#kontakt" class="btn btn--primary nav__cta">Zakaži razgovor</a>
     <button class="nav__hamburger" aria-label="Otvori meni" aria-expanded="false" aria-controls="mobile-menu">
-      <svg class="nav__hamburger-icon-open" width="22" height="22" viewBox="0 0 22 22" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-        <path d="M3 6h16M3 11h16M3 16h16" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
-      </svg>
-      <svg class="nav__hamburger-icon-close" width="22" height="22" viewBox="0 0 22 22" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" style="display:none;">
-        <path d="M4 4l14 14M18 4L4 18" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
-      </svg>
+      <svg class="ham-open" width="22" height="22" viewBox="0 0 22 22" fill="none" aria-hidden="true"><path d="M3 6h16M3 11h16M3 16h16" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+      <svg class="ham-close" width="22" height="22" viewBox="0 0 22 22" fill="none" aria-hidden="true" style="display:none;"><path d="M4 4l14 14M18 4L4 18" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
     </button>
-
-    <div class="nav__mobile-menu" id="mobile-menu">
-      <ul class="nav__mobile-links" role="list">
-        <li><a href="#drugi-mozak">Drugi mozak</a></li>
-        <li><a href="#sta-radimo">Šta radimo</a></li>
-        <li><a href="#kako-radimo">Kako radimo</a></li>
-        <li><a href="#studio">Studio</a></li>
-        <li><a href="#kontakt">Kontakt</a></li>
-      </ul>
-      <a href="#kontakt" class="btn btn--primary nav__mobile-cta">Zakaži razgovor</a>
+    <div class="nav__mobile" id="mobile-menu">
+      <a href="#drugi-mozak">Drugi mozak</a>
+      <a href="#sta-radimo">Šta radimo</a>
+      <a href="#kako-radimo">Kako radimo</a>
+      <a href="#studio">Studio</a>
+      <a href="blog.html">Blog</a>
+      <a href="#kontakt">Kontakt</a>
+      <a href="#kontakt" class="btn btn--primary">Zakaži razgovor</a>
     </div>
   </nav>
 
-  <!-- ── Modal root ────────────────────────────────────────────────────────────── -->
+  <!-- ── Modal root ──────────────────────────────────────────────────────────── -->
   <div class="modal-backdrop" id="modal-root" role="dialog" aria-modal="true" aria-hidden="true">
     <div class="modal" id="modal-container"></div>
   </div>
 
   <main>
-
-    <!-- ── 1. Hero ────────────────────────────────────────────────────────────── -->
-    <section class="section section--hero" id="top">
-      <canvas id="fmNetwork" class="fm-network"></canvas>
- 
-<style>
-  .fm-network {
-    position: absolute;
-    inset: 0;
-    width: 100%;
-    height: 100%;
-    pointer-events: none;
-    z-index: 0;
-  }
-</style>
- 
-<script>
-(function(){
-  const canvas = document.getElementById('fmNetwork');
-  const ctx = canvas.getContext('2d');
-  let W, H, dpr;
- 
-  function resize(){
-    dpr = Math.min(window.devicePixelRatio || 1, 2);
-    const rect = canvas.getBoundingClientRect();
-    W = rect.width; H = rect.height;
-    canvas.width = W * dpr; canvas.height = H * dpr;
-    ctx.scale(dpr, dpr);
-  }
-  new ResizeObserver(resize).observe(canvas);
-  resize();
- 
-  // Grid
-  const GRID = 80;
-  const nodes = [];
-  const beams = [];
- 
-  function buildNodes(){
-    nodes.length = 0;
-    const cols = Math.ceil(W / GRID) + 1;
-    const rows = Math.ceil(H / GRID) + 1;
-    for (let i = 0; i < cols; i++){
-      for (let j = 0; j < rows; j++){
-        // Only ~25% of intersections become live nodes
-        if (Math.random() > 0.25) continue;
-        nodes.push({
-          x: i * GRID,
-          y: j * GRID,
-          col: i, row: j,
-          phase: Math.random() * Math.PI * 2,
-          pulseRate: 0.5 + Math.random() * 1.2
-        });
-      }
-    }
-  }
-  buildNodes();
-  window.addEventListener('resize', () => setTimeout(buildNodes, 100));
- 
-  // Beam = pulse traveling along grid path between two nodes
-  function spawnBeam(){
-    if (nodes.length < 2) return;
-    const a = nodes[Math.floor(Math.random() * nodes.length)];
-    // Pick a nearby node within 3 grid cells
-    const candidates = nodes.filter(n =>
-      n !== a &&
-      Math.abs(n.col - a.col) + Math.abs(n.row - a.row) > 0 &&
-      Math.abs(n.col - a.col) + Math.abs(n.row - a.row) <= 3
-    );
-    if (!candidates.length) return;
-    const b = candidates[Math.floor(Math.random() * candidates.length)];
- 
-    // Build L-shaped path (horizontal then vertical, or vice versa)
-    const goHorizFirst = Math.random() > 0.5;
-    const corner = goHorizFirst
-      ? { x: b.x, y: a.y }
-      : { x: a.x, y: b.y };
- 
-    beams.push({
-      points: [a, corner, b],
-      t: 0,
-      duration: 1.2 + Math.random() * 0.8,
-      hue: Math.random() > 0.5 ? 'violet' : (Math.random() > 0.5 ? 'cyan' : 'pink')
-    });
-  }
- 
-  const COLORS = {
-    violet: [139, 92, 246],
-    cyan: [34, 211, 238],
-    pink: [236, 72, 153]
-  };
- 
-  let last = performance.now();
-  function frame(now){
-    const dt = (now - last) / 1000;
-    last = now;
-    const t = now / 1000;
- 
-    ctx.clearRect(0, 0, W, H);
- 
-    // 1. Grid (very subtle)
-    ctx.strokeStyle = 'rgba(255,255,255,0.025)';
-    ctx.lineWidth = 1;
-    ctx.beginPath();
-    for (let x = 0; x <= W; x += GRID){
-      ctx.moveTo(x + 0.5, 0); ctx.lineTo(x + 0.5, H);
-    }
-    for (let y = 0; y <= H; y += GRID){
-      ctx.moveTo(0, y + 0.5); ctx.lineTo(W, y + 0.5);
-    }
-    ctx.stroke();
- 
-    // 2. Nodes (pulsing dots at intersections)
-    for (const n of nodes){
-      const pulse = 0.5 + 0.5 * Math.sin(t * n.pulseRate + n.phase);
-      const r = 1.5 + pulse * 1.5;
-      const alpha = 0.15 + pulse * 0.35;
- 
-      // Outer glow
-      const grad = ctx.createRadialGradient(n.x, n.y, 0, n.x, n.y, 12);
-      grad.addColorStop(0, `rgba(168,139,250,${alpha * 0.6})`);
-      grad.addColorStop(1, 'rgba(168,139,250,0)');
-      ctx.fillStyle = grad;
-      ctx.beginPath();
-      ctx.arc(n.x, n.y, 12, 0, Math.PI * 2);
-      ctx.fill();
- 
-      // Core
-      ctx.fillStyle = `rgba(250,250,247,${0.4 + pulse * 0.4})`;
-      ctx.beginPath();
-      ctx.arc(n.x, n.y, r, 0, Math.PI * 2);
-      ctx.fill();
-    }
- 
-    // 3. Spawn new beams (probabilistic)
-    if (Math.random() < 0.08) spawnBeam();
- 
-    // 4. Render and advance beams
-    for (let i = beams.length - 1; i >= 0; i--){
-      const beam = beams[i];
-      beam.t += dt / beam.duration;
-      if (beam.t >= 1){ beams.splice(i, 1); continue; }
- 
-      const [c] = [COLORS[beam.hue]];
-      const progress = beam.t;
-      const trailLength = 0.25; // 25% of path is the "trail"
- 
-      // Compute total path length
-      const p0 = beam.points[0], p1 = beam.points[1], p2 = beam.points[2];
-      const seg1Len = Math.abs(p1.x - p0.x) + Math.abs(p1.y - p0.y);
-      const seg2Len = Math.abs(p2.x - p1.x) + Math.abs(p2.y - p1.y);
-      const totalLen = seg1Len + seg2Len;
- 
-      function pointAt(u){
-        const d = u * totalLen;
-        if (d <= seg1Len){
-          const k = seg1Len === 0 ? 0 : d / seg1Len;
-          return { x: p0.x + (p1.x - p0.x) * k, y: p0.y + (p1.y - p0.y) * k };
-        } else {
-          const k = seg2Len === 0 ? 0 : (d - seg1Len) / seg2Len;
-          return { x: p1.x + (p2.x - p1.x) * k, y: p1.y + (p2.y - p1.y) * k };
-        }
-      }
- 
-      // Draw trail as gradient line segments
-      const steps = 20;
-      const trailStart = Math.max(0, progress - trailLength);
-      for (let s = 0; s < steps; s++){
-        const u1 = trailStart + (s / steps) * (progress - trailStart);
-        const u2 = trailStart + ((s + 1) / steps) * (progress - trailStart);
-        const pt1 = pointAt(u1);
-        const pt2 = pointAt(u2);
-        const fade = s / steps; // 0 at tail, 1 at head
-        const alpha = fade * fade * 0.85;
-        ctx.strokeStyle = `rgba(${c[0]},${c[1]},${c[2]},${alpha})`;
-        ctx.lineWidth = 1.5 + fade * 1.5;
-        ctx.beginPath();
-        ctx.moveTo(pt1.x, pt1.y);
-        ctx.lineTo(pt2.x, pt2.y);
-        ctx.stroke();
-      }
- 
-      // Head glow
-      const head = pointAt(progress);
-      const headGrad = ctx.createRadialGradient(head.x, head.y, 0, head.x, head.y, 14);
-      headGrad.addColorStop(0, `rgba(${c[0]},${c[1]},${c[2]},0.9)`);
-      headGrad.addColorStop(1, `rgba(${c[0]},${c[1]},${c[2]},0)`);
-      ctx.fillStyle = headGrad;
-      ctx.beginPath();
-      ctx.arc(head.x, head.y, 14, 0, Math.PI * 2);
-      ctx.fill();
-    }
- 
-    requestAnimationFrame(frame);
-  }
-  requestAnimationFrame(frame);
-})();
-</script>>
+    <!-- ── 1. Hero ───────────────────────────────────────────────────────────── -->
+    <section class="hero" id="top">
+      <canvas id="signalField" class="hero__canvas" aria-hidden="true"></canvas>
+      <div class="hero__veil" aria-hidden="true"></div>
       <div class="container hero__inner">
-        <div class="hero__eyebrow hero-animate">
-          <span class="badge">Future Memory · Studio</span>
-        </div>
-        <h1 class="hero__title hero-animate">
-          Drugi mozak. <br>
-          <em>Na zahtev.</em>
-        </h1>
-        <p class="hero__lede hero-animate">
+        <span class="hero__badge hero-anim">Future Memory · Studio</span>
+        <h1 class="hero__title hero-anim">Drugi mozak.<br><em>Na zahtev.</em></h1>
+        <p class="hero__lede hero-anim">
           Vaša lična baza znanja, povezana sa najjačim LLM modelima na tržištu, postaje sagovornik koji razume vaš kontekst i kontroliše alate koje već koristite — od Photoshop-a do ComfyUI-a, od web razvoja do 3D rekonstrukcije.
         </p>
-        <div class="hero__actions hero-animate">
+        <div class="hero__actions hero-anim">
           <a href="#sta-radimo" class="btn btn--primary">Pogledaj šta radimo</a>
           <a href="#drugi-mozak" class="btn btn--ghost">Šta je drugi mozak?</a>
         </div>
-        <div class="hero__meta hero-animate">
-          <span class="mono">futurememory.studio</span>
-          <span class="mono">·</span>
-          <span class="mono">Novi Sad / Beograd / Daljinski</span>
+        <div class="hero__meta hero-anim">
+          <span>futurememory.studio</span><span>·</span><span>Novi Sad / Beograd / Daljinski</span>
         </div>
       </div>
     </section>
 
-    <!-- ── 2. Šta je drugi mozak ─────────────────────────────────────────────── -->
-    <section class="section section--explainer" id="drugi-mozak">
+    <!-- ── 2. Drugi mozak ────────────────────────────────────────────────────── -->
+    <section class="section" id="drugi-mozak">
       <div class="container explainer__grid">
         <aside class="explainer__heading">
-          <span class="mono mono--label">01 — Koncept</span>
+          <span class="kicker">01 — Koncept</span>
           <h2>Drugi mozak nije aplikacija. To je <em>arhitektura</em>.</h2>
-          <p class="explainer__lede">
-            Verovatno ste čuli za "Second Brain". Evo šta tu zaista postoji — i šta nije marketing.
-          </p>
+          <p class="explainer__lede">Verovatno ste čuli za "Second Brain". Evo šta tu zaista postoji — i šta nije marketing.</p>
         </aside>
         <div class="explainer__body">
-          <p>
-            Zamislite bazu podataka u koju vremenom unosite stvari koje vam trebaju. Beleške sa sastanaka. Naučne radove. Snimke razgovora. Fotografije tabli sa idejama. Foldere klijenata. Vaše stare projekte. Bilo šta što biste inače "zaboravili gde ste sačuvali".
-          </p>
-          <p>
-            Tu bazu zatim pohrani jedan od velikih modela — Claude ili ChatGPT/Codex — i indeksira je tako da joj može pristupiti preko chata. Ne čita sve odjednom. Pretražuje relevantno, citira izvor, i odgovara na osnovu vaših podataka. Sa minimalnom potrošnjom tokena, jer ne ubacuje sve u kontekst — samo ono što treba.
-          </p>
-          <p>
-            Rezultat: imate sagovornika koji zna ono što vi znate, ali sa savršenim sećanjem. Pita ga sa telefona dok ste u kafiću. Pita ga sa laptopa dok pišete izveštaj. Pita ga šta ste odlučili na sastanku od pre tri meseca, i on vam citira tačan paragraf iz transkripta.
-          </p>
-          <p>
-            Ovaj sistem nije Notion sa AI dugmetom. Nije ChatGPT sa fajlovima. To je <em>modularan i prenosiv</em> sistem koji vi posedujete — vaši podaci žive na vašem disku, vaš LLM ih čita pod vašim pravilima, i možete ga preneti sa jedne platforme na drugu kada se pejzaž promeni. (A promeniće se.)
-          </p>
-          <p>
-            Drugi mozak nije zamena za vaš mozak. To je <em>spoljni indeks</em> — kao što je biblioteka spoljni indeks za civilizaciju. Vaše misli ostaju vaše. Ovaj sistem samo prestaje da vas tera da ih pamtite napamet.
-          </p>
-          <div class="explainer__caveat">
-            <span class="mono mono--label">Iskrenost</span>
-            <p>
-              LLM-ovi haluciniraju. To je činjenica, ne softverska greška. Sistem koji vam pravim je dizajniran tako da to zna i da radi <em>uprkos</em> tome — sa proverama, citiranjem izvora, i diskovima koji se zovu "ne dozvoli mi da pošaljem ovo bez verifikacije". Bez te discipline, drugi mozak postaje treći problem.
-            </p>
+          <p class="reveal">Zamislite bazu podataka u koju vremenom unosite stvari koje vam trebaju. Beleške sa sastanaka. Naučne radove. Snimke razgovora. Fotografije tabli sa idejama. Foldere klijenata. Vaše stare projekte. Bilo šta što biste inače "zaboravili gde ste sačuvali".</p>
+          <p class="reveal">Tu bazu zatim pohrani jedan od velikih modela — Claude ili ChatGPT/Codex — i indeksira je tako da joj može pristupiti preko chata. Ne čita sve odjednom. Pretražuje relevantno, citira izvor, i odgovara na osnovu vaših podataka. Sa minimalnom potrošnjom tokena, jer ne ubacuje sve u kontekst — samo ono što treba.</p>
+          <p class="reveal">Rezultat: imate sagovornika koji zna ono što vi znate, ali sa savršenim sećanjem. Pita ga sa telefona dok ste u kafiću. Pita ga sa laptopa dok pišete izveštaj. Pita ga šta ste odlučili na sastanku od pre tri meseca, i on vam citira tačan paragraf iz transkripta.</p>
+          <p class="reveal">Ovaj sistem nije Notion sa AI dugmetom. Nije ChatGPT sa fajlovima. To je <em>modularan i prenosiv</em> sistem koji vi posedujete — vaši podaci žive na vašem disku, vaš LLM ih čita pod vašim pravilima, i možete ga preneti sa jedne platforme na drugu kada se pejzaž promeni. (A promeniće se.)</p>
+          <p class="reveal">Drugi mozak nije zamena za vaš mozak. To je <em>spoljni indeks</em> — kao što je biblioteka spoljni indeks za civilizaciju. Vaše misli ostaju vaše. Ovaj sistem samo prestaje da vas tera da ih pamtite napamet.</p>
+          <div class="explainer__caveat reveal">
+            <span class="kicker">Iskrenost</span>
+            <p>LLM-ovi haluciniraju. To je činjenica, ne softverska greška. Sistem koji vam pravim je dizajniran tako da to zna i da radi <em>uprkos</em> tome — sa proverama, citiranjem izvora, i diskovima koji se zovu "ne dozvoli mi da pošaljem ovo bez verifikacije". Bez te discipline, drugi mozak postaje treći problem.</p>
           </div>
         </div>
       </div>
     </section>
 
-    <!-- ── 3. Šta radimo — Service cards ─────────────────────────────────────── -->
-    <section class="section section--services" id="sta-radimo">
+    <!-- ── 3. Šta radimo ─────────────────────────────────────────────────────── -->
+    <section class="section" id="sta-radimo">
       <div class="container">
-        <div class="section__header">
-          <span class="mono mono--label">02 — Radovi</span>
+        <div class="section__header reveal">
+          <span class="kicker">02 — Radovi</span>
           <h2>Osam radnih tokova. <em>Jedan kontroler.</em></h2>
-          <p class="section__lede">
-            Svaki od ovih tokova koristi LLM kao Kontroler koji vodi alate i pipeline-ove. Vi razgovarate sa kontrolerom. Kontroler radi posao. Kliknite na karticu za detaljnije objašnjenje.
-          </p>
+          <p class="section__lede">Svaki od ovih tokova koristi LLM kao Kontroler koji vodi alate i pipeline-ove. Vi razgovarate sa kontrolerom. Kontroler radi posao. Kliknite na karticu za detaljnije objašnjenje.</p>
         </div>
         <div class="cards-grid">
-
-          <!-- Card 01 — Drugi mozak -->
-          <article class="card" data-card-id="01" tabindex="0" role="button" aria-haspopup="dialog" aria-label="Drugi mozak — pogledaj detalje">
-            <div class="card__image" aria-hidden="true"></div>
-            <div class="card__body">
-              <div>
-                <h3 class="card__title">Drugi mozak</h3>
-                <p class="card__tagline">Vaša lična baza znanja, indeksirana i pretraživa kroz razgovor.</p>
-              </div>
-              <span class="card__cta mono">Detaljnije →</span>
-            </div>
-          </article>
-
-          <!-- Card 02 — Web razvoj -->
-          <article class="card" data-card-id="02" tabindex="0" role="button" aria-haspopup="dialog" aria-label="Web razvoj — pogledaj detalje">
-            <div class="card__image" aria-hidden="true"></div>
-            <div class="card__body">
-              <div>
-                <h3 class="card__title">Web razvoj</h3>
-                <p class="card__tagline">Sajtovi i aplikacije, sa kodom koji ostaje vaš i razumljiv.</p>
-              </div>
-              <span class="card__cta mono">Detaljnije →</span>
-            </div>
-          </article>
-
-          <!-- Card 03 — Brending i grafika -->
-          <article class="card" data-card-id="03" tabindex="0" role="button" aria-haspopup="dialog" aria-label="Brending i grafika — pogledaj detalje">
-            <div class="card__image" aria-hidden="true"></div>
-            <div class="card__body">
-              <div>
-                <h3 class="card__title">Brending i grafika</h3>
-                <p class="card__tagline">Vizuelni sistemi i prepress, kontrolisani direktno iz razgovora.</p>
-              </div>
-              <span class="card__cta mono">Detaljnije →</span>
-            </div>
-          </article>
-
-          <!-- Card 04 — Generativna slika i animacija -->
-          <article class="card" data-card-id="04" tabindex="0" role="button" aria-haspopup="dialog" aria-label="Generativna slika i animacija — pogledaj detalje">
-            <div class="card__image" aria-hidden="true"></div>
-            <div class="card__body">
-              <div>
-                <h3 class="card__title">Generativna slika i animacija</h3>
-                <p class="card__tagline">ComfyUI workflow-i pod prst, sa lokalnim modelima i kontrolom kvaliteta.</p>
-              </div>
-              <span class="card__cta mono">Detaljnije →</span>
-            </div>
-          </article>
-
-          <!-- Card 05 — 3D i Gaussian Splatting -->
-          <article class="card" data-card-id="05" tabindex="0" role="button" aria-haspopup="dialog" aria-label="3D i Gaussian Splatting — pogledaj detalje">
-            <div class="card__image" aria-hidden="true"></div>
-            <div class="card__body">
-              <div>
-                <h3 class="card__title">3D i Gaussian Splatting</h3>
-                <p class="card__tagline">Fotorealistična 3D rekonstrukcija iz fotografija ili video snimaka.</p>
-              </div>
-              <span class="card__cta mono">Detaljnije →</span>
-            </div>
-          </article>
-
-          <!-- Card 06 — Lokalna AI infrastruktura -->
-          <article class="card" data-card-id="06" tabindex="0" role="button" aria-haspopup="dialog" aria-label="Lokalna AI infrastruktura — pogledaj detalje">
-            <div class="card__image" aria-hidden="true"></div>
-            <div class="card__body">
-              <div>
-                <h3 class="card__title">Lokalna AI infrastruktura</h3>
-                <p class="card__tagline">Privatni LLM-ovi na vašem hardveru. Vaši podaci ne idu u tuđi cloud.</p>
-              </div>
-              <span class="card__cta mono">Detaljnije →</span>
-            </div>
-          </article>
-
-          <!-- Card 07 — Glas i transkripcija -->
-          <article class="card" data-card-id="07" tabindex="0" role="button" aria-haspopup="dialog" aria-label="Glas i transkripcija — pogledaj detalje">
-            <div class="card__image" aria-hidden="true"></div>
-            <div class="card__body">
-              <div>
-                <h3 class="card__title">Glas i transkripcija</h3>
-                <p class="card__tagline">Whisper STT pipeline od mikrofona do bilo koje aplikacije, jednim klikom.</p>
-              </div>
-              <span class="card__cta mono">Detaljnije →</span>
-            </div>
-          </article>
-
-          <!-- Card 08 — Mentorstvo i obuka -->
-          <article class="card" data-card-id="08" tabindex="0" role="button" aria-haspopup="dialog" aria-label="Mentorstvo i obuka — pogledaj detalje">
-            <div class="card__image" aria-hidden="true"></div>
-            <div class="card__body">
-              <div>
-                <h3 class="card__title">Mentorstvo i obuka</h3>
-                <p class="card__tagline">Naučite da koristite Claude Code i Codex profesionalno, bez gubljenja godina.</p>
-              </div>
-              <span class="card__cta mono">Detaljnije →</span>
-            </div>
-          </article>
-
-        </div><!-- /.cards-grid -->
+          <button class="card reveal" data-card-id="01" data-index="01" aria-haspopup="dialog" aria-label="Drugi mozak — pogledaj detalje">
+            <h3 class="card__title">Drugi mozak</h3>
+            <p class="card__tagline">Vaša lična baza znanja, indeksirana i pretraživa kroz razgovor.</p>
+            <span class="card__cta">Detaljnije →</span>
+          </button>
+          <button class="card reveal" data-card-id="02" data-index="02" aria-haspopup="dialog" aria-label="Web razvoj — pogledaj detalje">
+            <h3 class="card__title">Web razvoj</h3>
+            <p class="card__tagline">Sajtovi i aplikacije, sa kodom koji ostaje vaš i razumljiv.</p>
+            <span class="card__cta">Detaljnije →</span>
+          </button>
+          <button class="card reveal" data-card-id="03" data-index="03" aria-haspopup="dialog" aria-label="Brending i grafika — pogledaj detalje">
+            <h3 class="card__title">Brending i grafika</h3>
+            <p class="card__tagline">Vizuelni sistemi i prepress, kontrolisani direktno iz razgovora.</p>
+            <span class="card__cta">Detaljnije →</span>
+          </button>
+          <button class="card reveal" data-card-id="04" data-index="04" aria-haspopup="dialog" aria-label="Generativna slika i animacija — pogledaj detalje">
+            <h3 class="card__title">Generativna slika i animacija</h3>
+            <p class="card__tagline">ComfyUI workflow-i pod prst, sa lokalnim modelima i kontrolom kvaliteta.</p>
+            <span class="card__cta">Detaljnije →</span>
+          </button>
+          <button class="card reveal" data-card-id="05" data-index="05" aria-haspopup="dialog" aria-label="3D i Gaussian Splatting — pogledaj detalje">
+            <h3 class="card__title">3D i Gaussian Splatting</h3>
+            <p class="card__tagline">Fotorealistična 3D rekonstrukcija iz fotografija ili video snimaka.</p>
+            <span class="card__cta">Detaljnije →</span>
+          </button>
+          <button class="card reveal" data-card-id="06" data-index="06" aria-haspopup="dialog" aria-label="Lokalna AI infrastruktura — pogledaj detalje">
+            <h3 class="card__title">Lokalna AI infrastruktura</h3>
+            <p class="card__tagline">Privatni LLM-ovi na vašem hardveru. Vaši podaci ne idu u tuđi cloud.</p>
+            <span class="card__cta">Detaljnije →</span>
+          </button>
+          <button class="card reveal" data-card-id="07" data-index="07" aria-haspopup="dialog" aria-label="Glas i transkripcija — pogledaj detalje">
+            <h3 class="card__title">Glas i transkripcija</h3>
+            <p class="card__tagline">Whisper STT pipeline od mikrofona do bilo koje aplikacije, jednim klikom.</p>
+            <span class="card__cta">Detaljnije →</span>
+          </button>
+          <button class="card reveal" data-card-id="08" data-index="08" aria-haspopup="dialog" aria-label="Mentorstvo i obuka — pogledaj detalje">
+            <h3 class="card__title">Mentorstvo i obuka</h3>
+            <p class="card__tagline">Naučite da koristite Claude Code i Codex profesionalno, bez gubljenja godina.</p>
+            <span class="card__cta">Detaljnije →</span>
+          </button>
+        </div>
       </div>
     </section>
 
-    <!-- ── Modal templates (edit content here directly) ──────────────────────── -->
-
+    <!-- ── Modal templates ───────────────────────────────────────────────────── -->
     <template id="modal-01">
-      <button class="modal__close" aria-label="Zatvori">
-        <svg width="15" height="15" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-          <path d="M1.5 1.5L13.5 13.5M13.5 1.5L1.5 13.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
-        </svg>
-      </button>
-      <div class="modal__image modal__image--01" aria-hidden="true"></div>
+      <button class="modal__close" aria-label="Zatvori"><svg width="15" height="15" viewBox="0 0 15 15" fill="none" aria-hidden="true"><path d="M1.5 1.5L13.5 13.5M13.5 1.5L1.5 13.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></button>
       <div class="modal__body">
         <h2 class="modal__title" id="modal-title-01">Drugi mozak — vaša lična baza znanja</h2>
-        <div class="modal__section">
-          <h3>Šta je ovo</h3>
+        <div class="modal__section"><h3>Šta je ovo</h3>
           <p>Lična baza znanja koju zajedno punimo vašim materijalom — beleške, PDF-ovi, transkripti razgovora, slike, foldere klijenata, stare projekte. Sve to ulazi u sistem koji LLM indeksira i čita pod vašim pravilima. Pristupate joj preko običnog chata na telefonu ili laptopu. Sistem citira izvor uz svaki odgovor, tako da znate odakle dolazi tvrdnja.</p>
           <p>Vaši podaci ostaju na vašem disku. Ne odlaze u nečiji cloud osim ako vi tako ne odlučite. Sistem je dizajniran da bude prenosiv — danas radi sa Claude-om, sutra sa novim modelom, bez gubljenja sadržaja koji ste godinama gradili.</p>
         </div>
         <hr class="modal__divider">
-        <div class="modal__section">
-          <h3>Šta dobijate</h3>
+        <div class="modal__section"><h3>Šta dobijate</h3>
           <ul>
             <li>Strukturisanu bazu znanja sa konvencijama koje vi razumete</li>
             <li>Chat interfejs (telefon + laptop) koji pretražuje samo vašu bazu</li>
@@ -460,38 +759,23 @@
           </ul>
         </div>
         <hr class="modal__divider">
-        <div class="modal__section">
-          <h3>Tehnologije</h3>
-          <div class="modal__badges">
-            <span class="chip">Obsidian</span>
-            <span class="chip">Claude Projects</span>
-            <span class="chip">RAG</span>
-            <span class="chip">Markdown</span>
-            <span class="chip">Python</span>
-            <span class="chip">Local-first</span>
-          </div>
+        <div class="modal__section"><h3>Tehnologije</h3>
+          <div class="modal__badges"><span class="chip">Obsidian</span><span class="chip">Claude Projects</span><span class="chip">RAG</span><span class="chip">Markdown</span><span class="chip">Python</span><span class="chip">Local-first</span></div>
         </div>
         <a href="#kontakt" class="btn btn--primary modal__cta">Pošalji upit</a>
       </div>
     </template>
 
     <template id="modal-02">
-      <button class="modal__close" aria-label="Zatvori">
-        <svg width="15" height="15" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-          <path d="M1.5 1.5L13.5 13.5M13.5 1.5L1.5 13.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
-        </svg>
-      </button>
-      <div class="modal__image modal__image--02" aria-hidden="true"></div>
+      <button class="modal__close" aria-label="Zatvori"><svg width="15" height="15" viewBox="0 0 15 15" fill="none" aria-hidden="true"><path d="M1.5 1.5L13.5 13.5M13.5 1.5L1.5 13.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></button>
       <div class="modal__body">
         <h2 class="modal__title" id="modal-title-02">Web razvoj — kod koji razumete</h2>
-        <div class="modal__section">
-          <h3>Šta je ovo</h3>
+        <div class="modal__section"><h3>Šta je ovo</h3>
           <p>Pravimo web sajtove, landing strane i jednostavnije aplikacije koristeći Claude Code i Codex kao primarne izvršioce. Razlika u odnosu na "AI website builder" alate je u tome da vi dobijate čist kod u svom Git repozitorijumu, koji možete da preuzmete, hostujete bilo gde, i menjate sami ili sa nekim drugim za pet godina.</p>
           <p>Sistemski je postavljen workflow gde ja vodim arhitekturu i verifikaciju, a LLM-ovi pišu kod pod nadzorom. Sve ide kroz verziju i pregled — bez "magic" koraka koje niko ne razume.</p>
         </div>
         <hr class="modal__divider">
-        <div class="modal__section">
-          <h3>Šta dobijate</h3>
+        <div class="modal__section"><h3>Šta dobijate</h3>
           <ul>
             <li>Statički sajt ili aplikacija u Git repozitorijumu (vaš nalog)</li>
             <li>Vanilla HTML/CSS/JS ili React/Next.js, prema potrebi</li>
@@ -501,39 +785,22 @@
           </ul>
         </div>
         <hr class="modal__divider">
-        <div class="modal__section">
-          <h3>Tehnologije</h3>
-          <div class="modal__badges">
-            <span class="chip">Claude Code</span>
-            <span class="chip">Codex</span>
-            <span class="chip">HTML/CSS/JS</span>
-            <span class="chip">React</span>
-            <span class="chip">Next.js</span>
-            <span class="chip">Git</span>
-            <span class="chip">Vercel</span>
-            <span class="chip">Netlify</span>
-          </div>
+        <div class="modal__section"><h3>Tehnologije</h3>
+          <div class="modal__badges"><span class="chip">Claude Code</span><span class="chip">Codex</span><span class="chip">HTML/CSS/JS</span><span class="chip">React</span><span class="chip">Next.js</span><span class="chip">Git</span><span class="chip">Vercel</span><span class="chip">Netlify</span></div>
         </div>
         <a href="#kontakt" class="btn btn--primary modal__cta">Pošalji upit</a>
       </div>
     </template>
 
     <template id="modal-03">
-      <button class="modal__close" aria-label="Zatvori">
-        <svg width="15" height="15" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-          <path d="M1.5 1.5L13.5 13.5M13.5 1.5L1.5 13.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
-        </svg>
-      </button>
-      <div class="modal__image modal__image--03" aria-hidden="true"></div>
+      <button class="modal__close" aria-label="Zatvori"><svg width="15" height="15" viewBox="0 0 15 15" fill="none" aria-hidden="true"><path d="M1.5 1.5L13.5 13.5M13.5 1.5L1.5 13.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></button>
       <div class="modal__body">
         <h2 class="modal__title" id="modal-title-03">Brending i grafika — vizuelni sistemi</h2>
-        <div class="modal__section">
-          <h3>Šta je ovo</h3>
+        <div class="modal__section"><h3>Šta je ovo</h3>
           <p>Brand sistemi, vizuelni identiteti, prepress workflow-i i automatizacija Adobe alata kroz scripting. Photoshop akcije za pripremu za štampu, Illustrator data merge za batch generisanje (sertifikati, etikete, lokalizacije), Figma plugin-i za usklađivanje sa brand sistemom. LLM kontroler ovde znači da vi razgovarate, on pokreće alate — ne morate da znate JSX ili Photoshop scripting.</p>
         </div>
         <hr class="modal__divider">
-        <div class="modal__section">
-          <h3>Šta dobijate</h3>
+        <div class="modal__section"><h3>Šta dobijate</h3>
           <ul>
             <li>Vizuelni identitet (logo, paleta, tipografija, primeri primene)</li>
             <li>Prepress-spreman izlaz (TIFF/LZW @ 300 dpi, CMYK gde treba)</li>
@@ -542,38 +809,23 @@
           </ul>
         </div>
         <hr class="modal__divider">
-        <div class="modal__section">
-          <h3>Tehnologije</h3>
-          <div class="modal__badges">
-            <span class="chip">Adobe Photoshop</span>
-            <span class="chip">Illustrator</span>
-            <span class="chip">InDesign</span>
-            <span class="chip">Figma</span>
-            <span class="chip">MCP</span>
-            <span class="chip">Scripting</span>
-          </div>
+        <div class="modal__section"><h3>Tehnologije</h3>
+          <div class="modal__badges"><span class="chip">Adobe Photoshop</span><span class="chip">Illustrator</span><span class="chip">InDesign</span><span class="chip">Figma</span><span class="chip">MCP</span><span class="chip">Scripting</span></div>
         </div>
         <a href="#kontakt" class="btn btn--primary modal__cta">Pošalji upit</a>
       </div>
     </template>
 
     <template id="modal-04">
-      <button class="modal__close" aria-label="Zatvori">
-        <svg width="15" height="15" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-          <path d="M1.5 1.5L13.5 13.5M13.5 1.5L1.5 13.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
-        </svg>
-      </button>
-      <div class="modal__image modal__image--04" aria-hidden="true"></div>
+      <button class="modal__close" aria-label="Zatvori"><svg width="15" height="15" viewBox="0 0 15 15" fill="none" aria-hidden="true"><path d="M1.5 1.5L13.5 13.5M13.5 1.5L1.5 13.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></button>
       <div class="modal__body">
         <h2 class="modal__title" id="modal-title-04">Generativna slika i animacija — ComfyUI pipelines</h2>
-        <div class="modal__section">
-          <h3>Šta je ovo</h3>
+        <div class="modal__section"><h3>Šta je ovo</h3>
           <p>Pravimo i isporučujemo ComfyUI workflow-e za vaš RTX hardver ili na cloud GPU. Konzistentni karakteri (IPAdapter, LoRA trening), prepoznatljiv stil (style reference), kontrolisana kompozicija (ControlNet), video (Wan, Hunyuan, animaciju kroz interpolaciju). Cilj je da vi imate workflow koji radi predvidljivo — ne magični prompt koji se "ponekad pogodi".</p>
           <p>Lokalno izvršavanje na vašem hardveru znači bez mesečne pretplate i bez slanja vaših referenci u tuđi cloud.</p>
         </div>
         <hr class="modal__divider">
-        <div class="modal__section">
-          <h3>Šta dobijate</h3>
+        <div class="modal__section"><h3>Šta dobijate</h3>
           <ul>
             <li>ComfyUI workflow JSON fajlove sa dokumentacijom svakog node-a</li>
             <li>Listu modela koje treba preuzeti, sa veličinama i izvorima</li>
@@ -582,40 +834,23 @@
           </ul>
         </div>
         <hr class="modal__divider">
-        <div class="modal__section">
-          <h3>Tehnologije</h3>
-          <div class="modal__badges">
-            <span class="chip">ComfyUI</span>
-            <span class="chip">Flux</span>
-            <span class="chip">SDXL</span>
-            <span class="chip">ControlNet</span>
-            <span class="chip">IPAdapter</span>
-            <span class="chip">Wan</span>
-            <span class="chip">Hunyuan</span>
-            <span class="chip">RTX 3090+</span>
-          </div>
+        <div class="modal__section"><h3>Tehnologije</h3>
+          <div class="modal__badges"><span class="chip">ComfyUI</span><span class="chip">Flux</span><span class="chip">SDXL</span><span class="chip">ControlNet</span><span class="chip">IPAdapter</span><span class="chip">Wan</span><span class="chip">Hunyuan</span><span class="chip">RTX 3090+</span></div>
         </div>
         <a href="#kontakt" class="btn btn--primary modal__cta">Pošalji upit</a>
       </div>
     </template>
 
     <template id="modal-05">
-      <button class="modal__close" aria-label="Zatvori">
-        <svg width="15" height="15" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-          <path d="M1.5 1.5L13.5 13.5M13.5 1.5L1.5 13.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
-        </svg>
-      </button>
-      <div class="modal__image modal__image--05" aria-hidden="true"></div>
+      <button class="modal__close" aria-label="Zatvori"><svg width="15" height="15" viewBox="0 0 15 15" fill="none" aria-hidden="true"><path d="M1.5 1.5L13.5 13.5M13.5 1.5L1.5 13.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></button>
       <div class="modal__body">
         <h2 class="modal__title" id="modal-title-05">3D i Gaussian Splatting — fotorealistična rekonstrukcija</h2>
-        <div class="modal__section">
-          <h3>Šta je ovo</h3>
+        <div class="modal__section"><h3>Šta je ovo</h3>
           <p>Gaussian Splatting je tehnika koja od običnog video snimka ili serije fotografija pravi 3D scenu kojom se može slobodno kretati kamera — sa zadržanim svetlom, refleksijama i materijalima originalne scene. To je nova klasa 3D sadržaja, između foto-realizma i klasičnog mesh-a.</p>
           <p>Pravimo splat scene za prezentacije proizvoda, virtuelne ture, virtual production setove, AR/VR projekte. Po potrebi izvozimo i u klasičan mesh za Blender ili Unreal pipeline.</p>
         </div>
         <hr class="modal__divider">
-        <div class="modal__section">
-          <h3>Šta dobijate</h3>
+        <div class="modal__section"><h3>Šta dobijate</h3>
           <ul>
             <li>.ply ili .splat fajl spreman za web viewer ili Unreal/Blender</li>
             <li>Snimak ili niz fotografija sa uputstvom (ako sami snimate)</li>
@@ -624,38 +859,23 @@
           </ul>
         </div>
         <hr class="modal__divider">
-        <div class="modal__section">
-          <h3>Tehnologije</h3>
-          <div class="modal__badges">
-            <span class="chip">Polycam</span>
-            <span class="chip">Postshot</span>
-            <span class="chip">Nerfstudio</span>
-            <span class="chip">3DGS</span>
-            <span class="chip">Blender</span>
-            <span class="chip">Unreal Engine</span>
-          </div>
+        <div class="modal__section"><h3>Tehnologije</h3>
+          <div class="modal__badges"><span class="chip">Polycam</span><span class="chip">Postshot</span><span class="chip">Nerfstudio</span><span class="chip">3DGS</span><span class="chip">Blender</span><span class="chip">Unreal Engine</span></div>
         </div>
         <a href="#kontakt" class="btn btn--primary modal__cta">Pošalji upit</a>
       </div>
     </template>
 
     <template id="modal-06">
-      <button class="modal__close" aria-label="Zatvori">
-        <svg width="15" height="15" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-          <path d="M1.5 1.5L13.5 13.5M13.5 1.5L1.5 13.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
-        </svg>
-      </button>
-      <div class="modal__image modal__image--06" aria-hidden="true"></div>
+      <button class="modal__close" aria-label="Zatvori"><svg width="15" height="15" viewBox="0 0 15 15" fill="none" aria-hidden="true"><path d="M1.5 1.5L13.5 13.5M13.5 1.5L1.5 13.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></button>
       <div class="modal__body">
         <h2 class="modal__title" id="modal-title-06">Lokalna AI infrastruktura — privatni LLM-ovi</h2>
-        <div class="modal__section">
-          <h3>Šta je ovo</h3>
+        <div class="modal__section"><h3>Šta je ovo</h3>
           <p>Za slučajeve gde poverljivost ili budžet ne dozvoljavaju cloud LLM API, postavljamo lokalnu infrastrukturu. Ollama, Qwen, Mistral, Llama — biramo model po zadatku. Hibridni setup (lokalno za rutinske stvari, cloud za one koje zahtevaju jaki "reasoning") drži mesečne troškove na nivou kafe.</p>
           <p>Setup uključuje Streamlit ili sopstveni dashboard kao jedinstveni interfejs, LangGraph orkestraciju ako su potrebni multi-agent tokovi, i pravila za kada koji model radi šta.</p>
         </div>
         <hr class="modal__divider">
-        <div class="modal__section">
-          <h3>Šta dobijate</h3>
+        <div class="modal__section"><h3>Šta dobijate</h3>
           <ul>
             <li>Funkcionalan lokalni LLM stack na vašem hardveru</li>
             <li>Hibridna pravila routing-a (lokalno vs cloud) sa procenom troškova</li>
@@ -664,39 +884,23 @@
           </ul>
         </div>
         <hr class="modal__divider">
-        <div class="modal__section">
-          <h3>Tehnologije</h3>
-          <div class="modal__badges">
-            <span class="chip">Ollama</span>
-            <span class="chip">Qwen</span>
-            <span class="chip">Mistral</span>
-            <span class="chip">LangGraph</span>
-            <span class="chip">Streamlit</span>
-            <span class="chip">Linux</span>
-            <span class="chip">RTX 3090+</span>
-          </div>
+        <div class="modal__section"><h3>Tehnologije</h3>
+          <div class="modal__badges"><span class="chip">Ollama</span><span class="chip">Qwen</span><span class="chip">Mistral</span><span class="chip">LangGraph</span><span class="chip">Streamlit</span><span class="chip">Linux</span><span class="chip">RTX 3090+</span></div>
         </div>
         <a href="#kontakt" class="btn btn--primary modal__cta">Pošalji upit</a>
       </div>
     </template>
 
     <template id="modal-07">
-      <button class="modal__close" aria-label="Zatvori">
-        <svg width="15" height="15" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-          <path d="M1.5 1.5L13.5 13.5M13.5 1.5L1.5 13.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
-        </svg>
-      </button>
-      <div class="modal__image modal__image--07" aria-hidden="true"></div>
+      <button class="modal__close" aria-label="Zatvori"><svg width="15" height="15" viewBox="0 0 15 15" fill="none" aria-hidden="true"><path d="M1.5 1.5L13.5 13.5M13.5 1.5L1.5 13.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></button>
       <div class="modal__body">
         <h2 class="modal__title" id="modal-title-07">Glas i transkripcija — Whisper STT pipeline</h2>
-        <div class="modal__section">
-          <h3>Šta je ovo</h3>
+        <div class="modal__section"><h3>Šta je ovo</h3>
           <p>Lokalna transkripcija govora kroz Whisper, povezana sa hardverskim dugmetom (na primer HOCO bluetooth mikrofonom) ili tastaturskim shortcut-om. Pričate u mikrofon, otpustite dugme, tekst se pojavi gde god je kursor — u chat-u, u dokumentu, u email-u.</p>
           <p>Pipeline radi lokalno, znači privatno i bez kašnjenja od mrežnog poziva. Pratećih jezika ima koliko ih Whisper podržava (uključujući srpski).</p>
         </div>
         <hr class="modal__divider">
-        <div class="modal__section">
-          <h3>Šta dobijate</h3>
+        <div class="modal__section"><h3>Šta dobijate</h3>
           <ul>
             <li>Konfigurisan Whisper na vašoj mašini sa modelom prema potrebi</li>
             <li>Hardver button + softver bridge (pyautogui ili native shortcut)</li>
@@ -705,37 +909,23 @@
           </ul>
         </div>
         <hr class="modal__divider">
-        <div class="modal__section">
-          <h3>Tehnologije</h3>
-          <div class="modal__badges">
-            <span class="chip">Whisper</span>
-            <span class="chip">Python</span>
-            <span class="chip">pyautogui</span>
-            <span class="chip">HOCO BT</span>
-            <span class="chip">Linux/Windows/macOS</span>
-          </div>
+        <div class="modal__section"><h3>Tehnologije</h3>
+          <div class="modal__badges"><span class="chip">Whisper</span><span class="chip">Python</span><span class="chip">pyautogui</span><span class="chip">HOCO BT</span><span class="chip">Linux/Windows/macOS</span></div>
         </div>
         <a href="#kontakt" class="btn btn--primary modal__cta">Pošalji upit</a>
       </div>
     </template>
 
     <template id="modal-08">
-      <button class="modal__close" aria-label="Zatvori">
-        <svg width="15" height="15" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-          <path d="M1.5 1.5L13.5 13.5M13.5 1.5L1.5 13.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
-        </svg>
-      </button>
-      <div class="modal__image modal__image--08" aria-hidden="true"></div>
+      <button class="modal__close" aria-label="Zatvori"><svg width="15" height="15" viewBox="0 0 15 15" fill="none" aria-hidden="true"><path d="M1.5 1.5L13.5 13.5M13.5 1.5L1.5 13.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></button>
       <div class="modal__body">
         <h2 class="modal__title" id="modal-title-08">Mentorstvo i obuka — Claude Code profesionalno</h2>
-        <div class="modal__section">
-          <h3>Šta je ovo</h3>
+        <div class="modal__section"><h3>Šta je ovo</h3>
           <p>Strukturisan jedan-na-jedan program za programere, dizajnere i istraživače koji žele da rade sa LLM-ovima ozbiljno, ne kao hobi. Pokrivamo: kako se postavlja kontekst, kako se verifikuje izlaz, kako se brani od halucinacija, kako se postavlja Git workflow koji radi sa AI saradnikom, i — najvažnije — koja je granica između "ovo mogu da poverim modelu" i "ovo moram sam".</p>
           <p>Iskreno: LLM-ovi su moćni i nepouzdani u isto vreme. Ako ih koristite bez discipline, dobićete brz prototip i sporu, skupu, dugu produkciju. Cilj programa je da vam uštedi hiljade sati koje biste inače proveli na YouTube-u, učeći kroz pokušaj-i-grešku.</p>
         </div>
         <hr class="modal__divider">
-        <div class="modal__section">
-          <h3>Šta dobijate</h3>
+        <div class="modal__section"><h3>Šta dobijate</h3>
           <ul>
             <li>6 ili 12 nedelja strukturisanog rada (po dogovoru)</li>
             <li>Vaš stvarni projekat kao radni materijal</li>
@@ -744,72 +934,41 @@
           </ul>
         </div>
         <hr class="modal__divider">
-        <div class="modal__section">
-          <h3>Tehnologije</h3>
-          <div class="modal__badges">
-            <span class="chip">Claude Code</span>
-            <span class="chip">Codex</span>
-            <span class="chip">Git</span>
-            <span class="chip">verification protocols</span>
-            <span class="chip">prompt engineering</span>
-          </div>
+        <div class="modal__section"><h3>Tehnologije</h3>
+          <div class="modal__badges"><span class="chip">Claude Code</span><span class="chip">Codex</span><span class="chip">Git</span><span class="chip">verification protocols</span><span class="chip">prompt engineering</span></div>
         </div>
         <a href="#kontakt" class="btn btn--primary modal__cta">Pošalji upit</a>
       </div>
     </template>
 
-    <!-- ── 4. Kako radimo — Process ───────────────────────────────────────────── -->
-    <section class="section section--process" id="kako-radimo">
+    <!-- ── 4. Kako radimo ────────────────────────────────────────────────────── -->
+    <section class="section" id="kako-radimo">
       <div class="container">
-        <div class="section__header">
-          <span class="mono mono--label">03 — Proces</span>
+        <div class="section__header reveal">
+          <span class="kicker">03 — Proces</span>
           <h2>Kako <em>radimo</em>.</h2>
-          <p class="section__lede">
-            Bez "AI magije". Sa razgovorom, dokumentom, i isporukom koju možete da proverite.
-          </p>
+          <p class="section__lede">Bez "AI magije". Sa razgovorom, dokumentom, i isporukom koju možete da proverite.</p>
         </div>
         <div class="process">
-          <div class="process__step">
-            <span class="mono mono--num">01</span>
-            <h3>Razgovor</h3>
-            <p>Pišete šta vam treba — ili pričamo. Bez ograničenja forme. Cilj je da razumem šta zaista treba da uradimo, a ne šta zvuči dobro u brifu.</p>
-          </div>
-          <div class="process__step">
-            <span class="mono mono--num">02</span>
-            <h3>Dokument</h3>
-            <p>Ja pišem kratak dokument koji opisuje šta će sistem da radi, šta neće, koje su pretpostavke, i koliko košta. Vi potvrđujete ili menjamo dok ne legne.</p>
-          </div>
-          <div class="process__step">
-            <span class="mono mono--num">03</span>
-            <h3>Izgradnja</h3>
-            <p>Radim. Sa Claude Code-om i Codex-om kao izvršiocima, mojim nadzorom kao arhitektom i verifikatorom. Pravim međukorake koji se mogu testirati. Bez "javljam se kad bude gotovo".</p>
-          </div>
-          <div class="process__step">
-            <span class="mono mono--num">04</span>
-            <h3>Isporuka</h3>
-            <p>Predajem fajlove, kod, dokumentaciju. Pokazujem šta radi, šta ne, i koje su poznate granice. Sve ostaje vaše — vaš Git, vaš nalog, vaši podaci.</p>
-          </div>
+          <div class="process__step reveal"><span class="process__num">01</span><h3>Razgovor</h3><p>Pišete šta vam treba — ili pričamo. Bez ograničenja forme. Cilj je da razumem šta zaista treba da uradimo, a ne šta zvuči dobro u brifu.</p></div>
+          <div class="process__step reveal"><span class="process__num">02</span><h3>Dokument</h3><p>Ja pišem kratak dokument koji opisuje šta će sistem da radi, šta neće, koje su pretpostavke, i koliko košta. Vi potvrđujete ili menjamo dok ne legne.</p></div>
+          <div class="process__step reveal"><span class="process__num">03</span><h3>Izgradnja</h3><p>Radim. Sa Claude Code-om i Codex-om kao izvršiocima, mojim nadzorom kao arhitektom i verifikatorom. Pravim međukorake koji se mogu testirati. Bez "javljam se kad bude gotovo".</p></div>
+          <div class="process__step reveal"><span class="process__num">04</span><h3>Isporuka</h3><p>Predajem fajlove, kod, dokumentaciju. Pokazujem šta radi, šta ne, i koje su poznate granice. Sve ostaje vaše — vaš Git, vaš nalog, vaši podaci.</p></div>
         </div>
       </div>
     </section>
 
     <!-- ── 5. Studio ─────────────────────────────────────────────────────────── -->
-    <section class="section section--about" id="studio">
+    <section class="section" id="studio">
       <div class="container about__grid">
         <div class="about__body">
-          <span class="mono mono--label">04 — Studio</span>
+          <span class="kicker">04 — Studio</span>
           <h2>Ko stoji iza ovoga.</h2>
-          <p>
-            Future Memory je studio Nenada Kuzmanovića. Docent na Fakultetu tehničkih nauka u Novom Sadu. Poslednjih pet godina sam proveo radeći 15 sati dnevno na razumevanju, testiranju i puštanju u rad svega što je moglo da se preuzme sa GitHub-a i pokrene na RTX 3090.
-          </p>
-          <p>
-            Paralelno sa tim radim na <em>AUTO ENGINE</em> projektu — sistemu za kriptografski upravljano AI-asistirano inženjerstvo. To je razlog zašto ovaj studio ima jaku poziciju oko poštenja, verifikacije, i razlike između "model je rekao" i "stvar je urađena".
-          </p>
-          <p>
-            Ako tražite nekoga ko će vam reći da je AI rešenje svega — to nije ovaj studio. Ako tražite nekoga ko zna gde su granice i kako da ih koristi u vašu korist — onda da.
-          </p>
+          <p class="reveal">Future Memory je studio Nenada Kuzmanovića. Docent na Fakultetu tehničkih nauka u Novom Sadu. Poslednjih pet godina sam proveo radeći 15 sati dnevno na razumevanju, testiranju i puštanju u rad svega što je moglo da se preuzme sa GitHub-a i pokrene na RTX 3090.</p>
+          <p class="reveal">Paralelno sa tim radim na <em>AUTO ENGINE</em> projektu — sistemu za kriptografski upravljano AI-asistirano inženjerstvo. To je razlog zašto ovaj studio ima jaku poziciju oko poštenja, verifikacije, i razlike između "model je rekao" i "stvar je urađena".</p>
+          <p class="reveal">Ako tražite nekoga ko će vam reći da je AI rešenje svega — to nije ovaj studio. Ako tražite nekoga ko zna gde su granice i kako da ih koristi u vašu korist — onda da.</p>
         </div>
-        <aside class="about__panel">
+        <aside class="about__panel reveal">
           <h3>Tehnička osnova</h3>
           <ul class="about__list">
             <li>RTX 3090 lokalni rig</li>
@@ -820,39 +979,29 @@
             <li>Adobe paket + Figma za grafiku</li>
             <li>Git za sve, bez izuzetka</li>
           </ul>
-          <hr class="about__panel-divider">
+          <hr class="about__divider">
           <h3>Lokacija</h3>
           <p>Novi Sad. Rad za klijente lokalno i daljinski.</p>
         </aside>
       </div>
     </section>
 
-    <!-- ── Phase 6.5 — Lab section placeholder ───────────────────────────────── -->
-    <!-- LAB SECTION BLOCKED: lab-section-dropin.html was not found in project root. -->
-    <!-- Provide lab-section-dropin.html and re-run Phase 6.5 to integrate. -->
-    <!-- Nav and footer Lab links are commented out until this is resolved. -->
-
     <!-- ── 6. Kontakt ────────────────────────────────────────────────────────── -->
-    <section class="section section--contact" id="kontakt">
-      <div class="container contact__inner">
-        <span class="mono mono--label">05 — Kontakt</span>
+    <section class="section contact" id="kontakt">
+      <div class="container contact__inner reveal">
+        <span class="kicker">05 — Kontakt</span>
         <h2>Imate <em>pitanje</em>?</h2>
-        <p class="contact__lede">
-          Pišite kratko šta vam treba. Odgovaram u roku od 2 radna dana.
-        </p>
+        <p class="contact__lede">Pišite kratko šta vam treba. Odgovaram u roku od 2 radna dana.</p>
         <div class="contact__actions">
           <a href="mailto:hello@futurememory.studio" class="btn btn--primary">hello@futurememory.studio</a>
           <a href="#" class="btn btn--ghost" data-calendly-placeholder>Zakaži 30 min razgovor</a>
         </div>
-        <p class="contact__note mono">
-          Za hitne projekte: napišite "HITNO" u naslov. Inače uobičajen tempo.
-        </p>
+        <p class="contact__note">Za hitne projekte: napišite "HITNO" u naslov. Inače uobičajen tempo.</p>
       </div>
     </section>
-
   </main>
 
-  <!-- ── Footer ────────────────────────────────────────────────────────────────── -->
+  <!-- ── Footer ──────────────────────────────────────────────────────────────── -->
   <footer class="footer">
     <div class="container footer__grid">
       <div class="footer__brand">
@@ -864,6 +1013,7 @@
         <a href="#sta-radimo">Šta radimo</a>
         <a href="#kako-radimo">Kako radimo</a>
         <a href="#studio">Studio</a>
+        <a href="blog.html">Blog</a>
         <a href="#kontakt">Kontakt</a>
       </nav>
       <div class="footer__meta">
@@ -871,11 +1021,217 @@
         <span class="mono">Novi Sad, Srbija</span>
       </div>
     </div>
-    <div class="footer__strip">
-      <p class="mono">Drugi mozak. Vaš sistem, vaša kontrola, vaš kod.</p>
-    </div>
+    <div class="footer__strip"><p>Drugi mozak. Vaš sistem, vaša kontrola, vaš kod.</p></div>
   </footer>
 
-  <script src="scripts/main.js"></script>
+  <script>
+  (function () {
+    'use strict';
+    var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    /* ── Signal-field hero canvas (cold-cyan energy over near-black) ─────────── */
+    (function signalField() {
+      var canvas = document.getElementById('signalField');
+      if (!canvas) return;
+      var ctx = canvas.getContext('2d');
+      var hero = canvas.closest('.hero');
+      var W = 0, H = 0, dpr = 1;
+
+      function resize() {
+        dpr = Math.min(window.devicePixelRatio || 1, 2);
+        var rect = hero.getBoundingClientRect();
+        W = rect.width; H = rect.height;
+        canvas.width = W * dpr; canvas.height = H * dpr;
+        ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+        buildNodes();
+      }
+
+      var GRID = 84;
+      var nodes = [], beams = [];
+      function buildNodes() {
+        nodes.length = 0;
+        var cols = Math.ceil(W / GRID) + 1, rows = Math.ceil(H / GRID) + 1;
+        for (var i = 0; i < cols; i++) for (var j = 0; j < rows; j++) {
+          if (Math.random() > 0.22) continue;
+          nodes.push({ x: i * GRID, y: j * GRID, col: i, row: j, phase: Math.random() * Math.PI * 2, rate: 0.4 + Math.random() * 1.0 });
+        }
+      }
+
+      var COLORS = { cyan: [46, 196, 214], cold: [150, 196, 233], violet: [150, 130, 230] };
+      function pickHue() { var r = Math.random(); return r > 0.92 ? 'violet' : (r > 0.5 ? 'cyan' : 'cold'); }
+
+      function spawnBeam() {
+        if (nodes.length < 2) return;
+        var a = nodes[(Math.random() * nodes.length) | 0];
+        var cand = nodes.filter(function (n) { var d = Math.abs(n.col - a.col) + Math.abs(n.row - a.row); return n !== a && d > 0 && d <= 3; });
+        if (!cand.length) return;
+        var b = cand[(Math.random() * cand.length) | 0];
+        var corner = Math.random() > 0.5 ? { x: b.x, y: a.y } : { x: a.x, y: b.y };
+        beams.push({ points: [a, corner, b], t: 0, duration: 1.2 + Math.random() * 0.9, hue: pickHue() });
+      }
+
+      var last = performance.now();
+      function frame(now) {
+        var dt = (now - last) / 1000; last = now;
+        var t = now / 1000;
+        ctx.clearRect(0, 0, W, H);
+
+        // Grid
+        ctx.strokeStyle = 'rgba(157,200,233,0.035)';
+        ctx.lineWidth = 1; ctx.beginPath();
+        for (var x = 0; x <= W; x += GRID) { ctx.moveTo(x + 0.5, 0); ctx.lineTo(x + 0.5, H); }
+        for (var y = 0; y <= H; y += GRID) { ctx.moveTo(0, y + 0.5); ctx.lineTo(W, y + 0.5); }
+        ctx.stroke();
+
+        // Nodes
+        for (var k = 0; k < nodes.length; k++) {
+          var n = nodes[k];
+          var pulse = 0.5 + 0.5 * Math.sin(t * n.rate + n.phase);
+          var grad = ctx.createRadialGradient(n.x, n.y, 0, n.x, n.y, 13);
+          grad.addColorStop(0, 'rgba(150,196,233,' + (0.10 + pulse * 0.30) + ')');
+          grad.addColorStop(1, 'rgba(150,196,233,0)');
+          ctx.fillStyle = grad; ctx.beginPath(); ctx.arc(n.x, n.y, 13, 0, Math.PI * 2); ctx.fill();
+          ctx.fillStyle = 'rgba(214,232,245,' + (0.35 + pulse * 0.4) + ')';
+          ctx.beginPath(); ctx.arc(n.x, n.y, 1.4 + pulse * 1.4, 0, Math.PI * 2); ctx.fill();
+        }
+
+        // Beams
+        if (!reduceMotion && Math.random() < 0.07) spawnBeam();
+        for (var i = beams.length - 1; i >= 0; i--) {
+          var beam = beams[i];
+          beam.t += dt / beam.duration;
+          if (beam.t >= 1) { beams.splice(i, 1); continue; }
+          var c = COLORS[beam.hue];
+          var p0 = beam.points[0], p1 = beam.points[1], p2 = beam.points[2];
+          var s1 = Math.abs(p1.x - p0.x) + Math.abs(p1.y - p0.y);
+          var s2 = Math.abs(p2.x - p1.x) + Math.abs(p2.y - p1.y);
+          var tot = s1 + s2;
+          var pointAt = function (u) {
+            var d = u * tot;
+            if (d <= s1) { var k1 = s1 === 0 ? 0 : d / s1; return { x: p0.x + (p1.x - p0.x) * k1, y: p0.y + (p1.y - p0.y) * k1 }; }
+            var k2 = s2 === 0 ? 0 : (d - s1) / s2; return { x: p1.x + (p2.x - p1.x) * k2, y: p1.y + (p2.y - p1.y) * k2 };
+          };
+          var prog = beam.t, trail = 0.26, steps = 18, start = Math.max(0, prog - trail);
+          for (var s = 0; s < steps; s++) {
+            var u1 = start + (s / steps) * (prog - start), u2 = start + ((s + 1) / steps) * (prog - start);
+            var a1 = pointAt(u1), a2 = pointAt(u2), fade = s / steps, al = fade * fade * 0.8;
+            ctx.strokeStyle = 'rgba(' + c[0] + ',' + c[1] + ',' + c[2] + ',' + al + ')';
+            ctx.lineWidth = 1.2 + fade * 1.6; ctx.beginPath(); ctx.moveTo(a1.x, a1.y); ctx.lineTo(a2.x, a2.y); ctx.stroke();
+          }
+          var head = pointAt(prog);
+          var hg = ctx.createRadialGradient(head.x, head.y, 0, head.x, head.y, 15);
+          hg.addColorStop(0, 'rgba(' + c[0] + ',' + c[1] + ',' + c[2] + ',0.9)');
+          hg.addColorStop(1, 'rgba(' + c[0] + ',' + c[1] + ',' + c[2] + ',0)');
+          ctx.fillStyle = hg; ctx.beginPath(); ctx.arc(head.x, head.y, 15, 0, Math.PI * 2); ctx.fill();
+        }
+        requestAnimationFrame(frame);
+      }
+      new ResizeObserver(resize).observe(hero);
+      resize();
+      requestAnimationFrame(frame);
+    })();
+
+    /* ── Nav scroll state ───────────────────────────────────────────────────── */
+    var nav = document.querySelector('.nav');
+    var ticking = false;
+    window.addEventListener('scroll', function () {
+      if (ticking) return; ticking = true;
+      requestAnimationFrame(function () { nav.classList.toggle('is-scrolled', window.scrollY > 40); ticking = false; });
+    }, { passive: true });
+
+    /* ── Mobile menu ────────────────────────────────────────────────────────── */
+    var ham = document.querySelector('.nav__hamburger');
+    var hOpen = document.querySelector('.ham-open'), hClose = document.querySelector('.ham-close');
+    if (ham) {
+      ham.addEventListener('click', function () {
+        var open = nav.classList.toggle('is-open');
+        ham.setAttribute('aria-expanded', open ? 'true' : 'false');
+        ham.setAttribute('aria-label', open ? 'Zatvori meni' : 'Otvori meni');
+        if (hOpen) hOpen.style.display = open ? 'none' : 'block';
+        if (hClose) hClose.style.display = open ? 'block' : 'none';
+      });
+      document.querySelectorAll('.nav__mobile a').forEach(function (a) {
+        a.addEventListener('click', function () {
+          nav.classList.remove('is-open');
+          ham.setAttribute('aria-expanded', 'false'); ham.setAttribute('aria-label', 'Otvori meni');
+          if (hOpen) hOpen.style.display = 'block'; if (hClose) hClose.style.display = 'none';
+        });
+      });
+    }
+
+    /* ── Smooth scroll with nav offset ──────────────────────────────────────── */
+    document.querySelectorAll('a[href^="#"]').forEach(function (a) {
+      a.addEventListener('click', function (e) {
+        var href = a.getAttribute('href');
+        if (!href || href === '#') return;
+        var target = document.querySelector(href);
+        if (!target) return;
+        e.preventDefault();
+        var top = target.getBoundingClientRect().top + window.scrollY - 72;
+        window.scrollTo({ top: top, behavior: reduceMotion ? 'auto' : 'smooth' });
+      });
+    });
+
+    /* ── Modal system ───────────────────────────────────────────────────────── */
+    var backdrop = document.getElementById('modal-root');
+    var modalEl = document.getElementById('modal-container');
+    var lastCard = null;
+
+    function getFocusable(c) {
+      return Array.from(c.querySelectorAll('a[href], button:not([disabled]), input, [tabindex]:not([tabindex="-1"])'))
+        .filter(function (el) { return el.offsetParent !== null; });
+    }
+    function trap(e) {
+      if (e.key !== 'Tab') return;
+      var f = getFocusable(modalEl); if (!f.length) return;
+      var first = f[0], lastF = f[f.length - 1];
+      if (e.shiftKey && document.activeElement === first) { e.preventDefault(); lastF.focus(); }
+      else if (!e.shiftKey && document.activeElement === lastF) { e.preventDefault(); first.focus(); }
+    }
+    function openModal(id) {
+      var tpl = document.getElementById('modal-' + id);
+      if (!tpl) return;
+      modalEl.innerHTML = '';
+      modalEl.appendChild(tpl.content.cloneNode(true));
+      modalEl.setAttribute('aria-labelledby', 'modal-title-' + id);
+      backdrop.setAttribute('aria-hidden', 'false');
+      backdrop.classList.add('is-open');
+      document.body.classList.add('is-modal-open');
+      var close = modalEl.querySelector('.modal__close');
+      if (close) close.addEventListener('click', closeModal);
+      modalEl.querySelectorAll('a[href="#kontakt"]').forEach(function (a) { a.addEventListener('click', closeModal); });
+      requestAnimationFrame(function () { var f = getFocusable(modalEl); if (f.length) f[0].focus(); });
+      backdrop.addEventListener('keydown', trap);
+    }
+    function closeModal() {
+      backdrop.classList.remove('is-open');
+      document.body.classList.remove('is-modal-open');
+      backdrop.setAttribute('aria-hidden', 'true');
+      backdrop.removeEventListener('keydown', trap);
+      if (lastCard) { lastCard.focus(); lastCard = null; }
+      setTimeout(function () { modalEl.innerHTML = ''; }, 220);
+    }
+    if (backdrop) backdrop.addEventListener('click', function (e) { if (e.target === backdrop) closeModal(); });
+    document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && backdrop.classList.contains('is-open')) closeModal(); });
+    document.querySelectorAll('.card').forEach(function (card) {
+      card.addEventListener('click', function () { lastCard = card; openModal(card.dataset.cardId); });
+    });
+
+    /* ── Reveal on scroll ───────────────────────────────────────────────────── */
+    var targets = document.querySelectorAll('.reveal');
+    if ('IntersectionObserver' in window && !reduceMotion) {
+      var obs = new IntersectionObserver(function (entries) {
+        entries.forEach(function (en) { if (en.isIntersecting) { en.target.classList.add('is-in'); obs.unobserve(en.target); } });
+      }, { threshold: 0.12 });
+      targets.forEach(function (el) { obs.observe(el); });
+    } else {
+      targets.forEach(function (el) { el.classList.add('is-in'); });
+    }
+
+    /* ── Hero entrance stagger ──────────────────────────────────────────────── */
+    var heroEls = document.querySelectorAll('.hero-anim');
+    heroEls.forEach(function (el, i) { setTimeout(function () { el.classList.add('is-in'); }, reduceMotion ? 0 : 90 * i); });
+  })();
+  </script>
 </body>
 </html>

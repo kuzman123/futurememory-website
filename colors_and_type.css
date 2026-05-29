@@ -1,0 +1,212 @@
+:root {
+  color-scheme: dark;
+
+  /* Source-derived canvas and surface tokens. */
+  --fp-bg: oklch(10.52% 0.0050 244.3);
+  --fp-bg-deep: oklch(8.41% 0.0040 244.3);
+  --fp-bg-raised: oklch(16.55% 0.0090 240.5);
+  --fp-bg-fallback: oklch(11.99% 0.0077 243.1);
+  --fp-panel: rgba(9, 12, 15, 0.76);
+  --fp-panel-strong: rgba(9, 12, 15, 0.9);
+  --fp-button: rgba(22, 29, 35, 0.82);
+  --fp-button-hover: rgba(31, 42, 50, 0.9);
+  --fp-border: rgba(174, 205, 232, 0.18);
+  --fp-border-strong: rgba(162, 199, 224, 0.28);
+  --fp-border-hover: rgba(190, 225, 248, 0.48);
+
+  /* Text and signal tokens. */
+  --fp-text: oklch(94.16% 0.0145 244.7);
+  --fp-muted: oklch(70.32% 0.0271 240.8);
+  --fp-accent: oklch(81.34% 0.0653 241.6);
+  --fp-focus: oklch(91.31% 0.0464 241.4);
+  --fp-signal-cold: oklch(73.04% 0.0862 246.5);
+  --fp-signal-cyan: oklch(64.51% 0.1107 215.1);
+  --fp-signal-violet: oklch(33.41% 0.0913 291.7);
+  --fp-signal-node: oklch(88.35% 0.0357 248.2);
+
+  /* Open Design and older-preview aliases. */
+  --bg: var(--fp-bg);
+  --surface: var(--fp-panel);
+  --fg: var(--fp-text);
+  --muted: var(--fp-muted);
+  --border: var(--fp-border);
+  --accent: var(--fp-accent);
+  --ds-bg: var(--fp-bg);
+  --ds-bg-2: var(--fp-bg-raised);
+  --ds-bg-3: oklch(12.60% 0.0054 226.0);
+  --ds-surface: var(--fp-panel);
+  --ds-fg: var(--fp-text);
+  --ds-muted: var(--fp-muted);
+  --ds-border: var(--fp-border);
+  --ds-accent: var(--fp-accent);
+  --ds-focus: var(--fp-focus);
+  --ds-cold: var(--fp-signal-cold);
+  --ds-cyan: var(--fp-signal-cyan);
+  --ds-violet: var(--fp-signal-violet);
+
+  /* Typography. No local font files were captured in source context. */
+  --fp-font-display: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --fp-font-body: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --fp-font-mono: ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+  --font-display: var(--fp-font-display);
+  --font-body: var(--fp-font-body);
+  --font-mono: var(--fp-font-mono);
+  --ds-font-display: var(--fp-font-display);
+  --ds-font-body: var(--fp-font-body);
+  --ds-font-mono: var(--fp-font-mono);
+
+  /* Compact source-backed spacing. */
+  --fp-space-1: 4px;
+  --fp-space-2: 8px;
+  --fp-space-3: 12px;
+  --fp-space-4: 14px;
+  --fp-space-5: 16px;
+  --fp-space-6: 24px;
+  --fp-space-7: 32px;
+  --fp-space-8: 48px;
+  --space-1: var(--fp-space-1);
+  --space-2: var(--fp-space-2);
+  --space-3: var(--fp-space-3);
+  --space-4: var(--fp-space-5);
+  --space-5: var(--fp-space-6);
+  --space-6: var(--fp-space-7);
+  --space-7: var(--fp-space-8);
+
+  --fp-radius-button: 6px;
+  --fp-radius-panel: 8px;
+  --fp-radius-pill: 999px;
+  --fp-control-min: 38px;
+  --fp-touch-min: 44px;
+  --fp-panel-width: 760px;
+  --fp-blur-panel: 14px;
+  --fp-shadow-panel: 0 18px 52px rgba(0, 0, 0, 0.34);
+  --fp-transition: 160ms cubic-bezier(0.23, 1, 0.32, 1);
+  --radius-control: var(--fp-radius-button);
+  --radius-panel: var(--fp-radius-panel);
+  --radius-pill: var(--fp-radius-pill);
+  --shadow-panel: var(--fp-shadow-panel);
+  --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  background: var(--fp-bg);
+  color: var(--fp-text);
+  font-family: var(--fp-font-body);
+}
+
+body {
+  margin: 0;
+  color: var(--fp-text);
+  font-family: var(--fp-font-body);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.fp-page,
+.signal-page {
+  min-height: 100vh;
+  background:
+    radial-gradient(circle at 50% 45%, rgba(47, 67, 82, 0.18), transparent 42%),
+    linear-gradient(135deg, #030405 0%, #0b0f12 54%, #050708 100%);
+}
+
+.fp-preview-shell {
+  width: min(1180px, calc(100% - 32px));
+  margin: 0 auto;
+  padding: 32px 0;
+}
+
+.fp-kicker,
+.signal-kicker {
+  color: var(--fp-accent);
+  font: 600 12px/1.2 var(--fp-font-mono);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.fp-title {
+  margin: 10px 0 0;
+  color: var(--fp-text);
+  font: 720 clamp(28px, 5vw, 48px)/1 var(--fp-font-display);
+  letter-spacing: 0;
+  text-wrap: pretty;
+}
+
+.fp-copy {
+  max-width: 68ch;
+  color: var(--fp-muted);
+  font-size: 14px;
+  line-height: 1.55;
+}
+
+.fp-panel,
+.signal-panel {
+  border: 1px solid var(--fp-border);
+  border-radius: var(--fp-radius-panel);
+  background: var(--fp-panel);
+  box-shadow: var(--fp-shadow-panel);
+  backdrop-filter: blur(var(--fp-blur-panel));
+  -webkit-backdrop-filter: blur(var(--fp-blur-panel));
+}
+
+.fp-control-button,
+.fp-file-button,
+.signal-button {
+  min-height: var(--fp-control-min);
+  border: 1px solid var(--fp-border-strong);
+  border-radius: var(--fp-radius-button);
+  background: var(--fp-button);
+  color: var(--fp-text);
+  font: 450 13px/1 var(--fp-font-body);
+  cursor: pointer;
+  transition: background var(--fp-transition), border-color var(--fp-transition), color var(--fp-transition);
+}
+
+.fp-control-button:hover,
+.fp-file-button:hover,
+.signal-button:hover,
+.signal-button[aria-pressed="true"] {
+  border-color: var(--fp-border-hover);
+  background: var(--fp-button-hover);
+}
+
+.fp-control-button:focus-visible,
+.fp-file-button:focus-within,
+.signal-button:focus-visible {
+  outline: 2px solid var(--fp-focus);
+  outline-offset: 3px;
+}
+
+.fp-status,
+.signal-status {
+  min-width: 120px;
+  color: var(--fp-muted);
+  font: 450 13px/1.35 var(--fp-font-body);
+  text-align: right;
+}
+
+.fp-metric,
+.signal-number {
+  color: var(--fp-signal-node);
+  font: 600 12px/1.2 var(--fp-font-mono);
+  font-variant-numeric: tabular-nums;
+}
+
+@media (max-width: 560px) {
+  .fp-preview-shell {
+    width: min(100% - 24px, 560px);
+    padding: 24px 0;
+  }
+
+  .fp-status,
+  .signal-status {
+    width: 100%;
+    min-width: 0;
+    text-align: left;
+  }
+}
+
