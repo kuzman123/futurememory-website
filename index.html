@@ -427,7 +427,7 @@
 <body>
   <!-- ── Intro title card (ported HyperFrames; plays once per session, then reveals the site) ── -->
   <div id="fm-intro" role="presentation">
-    <button type="button" class="fm-intro__skip" aria-label="Preskoči uvod">Preskoči ✕</button>
+    <button type="button" class="fm-intro__skip" aria-label="Preskoči uvod">Preskoči uvod →</button>
     <div class="tc-stage">
       <div class="signal-bg">
         <div class="bg-glow glow-one"></div>
@@ -485,13 +485,25 @@
     #fm-intro.is-hidden { opacity: 0; pointer-events: none; }
     #fm-intro.is-removed { display: none; }
     #fm-intro .fm-intro__skip {
-      position: absolute; top: 20px; right: 22px; z-index: 30;
-      border: 1px solid rgba(157,200,233,0.34); border-radius: 6px;
-      background: rgba(9,12,15,0.6); color: #c8e7ff;
-      font: 500 12px/1 ui-monospace, "Fira Code", monospace; letter-spacing: 0.1em; text-transform: uppercase;
-      padding: 9px 13px; cursor: pointer; transition: border-color 0.16s, background 0.16s;
+      position: absolute; left: 50%; bottom: 8%; transform: translateX(-50%); z-index: 30;
+      border: 1px solid rgba(157,200,233,0.5); border-radius: 999px;
+      background: rgba(9,12,15,0.74); color: #c8e7ff;
+      font: 600 14px/1 ui-monospace, "Fira Code", monospace; letter-spacing: 0.14em; text-transform: uppercase;
+      padding: 14px 26px; cursor: pointer; backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px);
+      box-shadow: 0 0 0 6px rgba(157,200,233,0.05), 0 0 26px rgba(157,200,233,0.20);
+      transition: border-color 0.16s, background 0.16s, box-shadow 0.16s, transform 0.16s;
+      animation: fmSkipPulse 2.2s ease-in-out infinite;
     }
-    #fm-intro .fm-intro__skip:hover { border-color: rgba(190,225,248,0.6); background: rgba(31,42,50,0.85); }
+    #fm-intro .fm-intro__skip:hover {
+      border-color: rgba(190,225,248,0.85); background: rgba(31,42,50,0.92);
+      transform: translateX(-50%) translateY(-2px);
+      box-shadow: 0 0 0 8px rgba(157,200,233,0.10), 0 0 34px rgba(157,200,233,0.34);
+    }
+    #fm-intro .fm-intro__skip:focus-visible { outline: 2px solid #c8e7ff; outline-offset: 3px; }
+    @keyframes fmSkipPulse {
+      0%, 100% { box-shadow: 0 0 0 6px rgba(157,200,233,0.05), 0 0 22px rgba(157,200,233,0.16); }
+      50%      { box-shadow: 0 0 0 11px rgba(157,200,233,0.10), 0 0 36px rgba(157,200,233,0.34); }
+    }
     #fm-intro .tc-stage {
       position: absolute; top: 50%; left: 50%;
       width: 1920px; height: 1080px;
